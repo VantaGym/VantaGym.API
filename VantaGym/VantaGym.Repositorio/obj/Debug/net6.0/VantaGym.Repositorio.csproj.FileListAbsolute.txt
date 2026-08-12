@@ -9,3 +9,9 @@ C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repos
 C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\refint\VantaGym.Repositorio.dll
 C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\VantaGym.Repositorio.pdb
 C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\ref\VantaGym.Repositorio.dll
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\bin\Debug\net6.0\VantaGym.Repositorio.runtimeconfig.json
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\bin\Debug\net6.0\VantaGym.Dominio.dll
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\bin\Debug\net6.0\VantaGym.Dominio.pdb
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\VantaGym.Repositorio.csproj.AssemblyReference.cache
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\VantaGym.B5969786.Up2Date
+C:\Users\Noite\Desktop\Gabriel\ProjetoFinal\VantaGym.API\VantaGym\VantaGym.Repositorio\obj\Debug\net6.0\VantaGym.Repositorio.genruntimeconfig.cache

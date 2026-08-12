@@ -9,4 +9,8 @@ public class Exercicio
     public int Series { get; set; }
     public int Repeticoes { get; set; }
     public GrupoMuscular GrupoMuscular { get; set; }
+    public bool Ativo { get; set; } = true;
+
+    public int FichaTreinoID { get; set; }
+    public FichaTreino FichaTreino { get; set; }
 }
