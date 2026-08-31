@@ -3,7 +3,7 @@ using VantaGym.Dominio.Entidades;
 
 namespace DataAccess.Repositorio;
 
-public class FichaTreinoRepositorio : BaseRepositorio
+public class FichaTreinoRepositorio : BaseRepositorio, IFichaTreinoRepositorio
 {
     public FichaTreinoRepositorio(VantaGymContexto contexto) : base(contexto)
     {

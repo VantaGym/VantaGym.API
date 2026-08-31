@@ -16,17 +16,12 @@ public class HistoricoTreinoConfiguracoes : IEntityTypeConfiguration<HistoricoTr
         builder.Property(nameof(HistoricoTreino.RepeticoesFeitas)).HasColumnName("RepeticoesFeitas").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.DataExecucao)).HasColumnName("DataExecucao").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.FichaTreinoID)).HasColumnName("FichaTreinoID").IsRequired(true);
-        builder.Property(nameof(HistoricoTreino.UsuarioID)).HasColumnName("UsuarioID").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.ExercicioID)).HasColumnName("ExercicioID").IsRequired(true);
+        builder.Property(nameof(HistoricoTreino.Ativo)).HasColumnName("Ativo").IsRequired(true);
 
         builder.HasOne(x => x.FichaTreino)
             .WithMany()
             .HasForeignKey(x => x.FichaTreinoID)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.Usuario)
-            .WithMany(x => x.HistoricoTreino)
-            .HasForeignKey(x => x.UsuarioID)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Exercicio)

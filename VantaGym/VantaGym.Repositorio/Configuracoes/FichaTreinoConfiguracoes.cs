@@ -12,12 +12,17 @@ public class FichaTreinoConfiguracoes : IEntityTypeConfiguration<FichaTreino>
         builder.ToTable("FichaTreino").HasKey(x => x.ID);
         builder.Property(nameof(FichaTreino.ID)).HasColumnName("FichaTreinoID");
         builder.Property(nameof(FichaTreino.Nome)).HasColumnName("Nome").IsRequired(true);
-        builder.Property(nameof(FichaTreino.Ativa)).HasColumnName("Ativa").IsRequired(true);
+        builder.Property(nameof(FichaTreino.Ativo)).HasColumnName("Ativa").IsRequired(true);
         builder.Property(nameof(FichaTreino.UsuarioID)).HasColumnName("UsuarioID").IsRequired(true);
 
         builder.HasOne(x => x.Usuario)
-            .WithMany(x => x.FichasTreino)
+            .WithMany()
             .HasForeignKey(x => x.UsuarioID)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(x => x.Exercicios)
+            .WithOne(x => x.FichaTreino)
+            .HasForeignKey(x => x.FichaTreinoID)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

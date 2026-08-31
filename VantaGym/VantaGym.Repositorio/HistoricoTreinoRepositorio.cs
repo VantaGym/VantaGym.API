@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using VantaGym.Dominio.Entidades;
 
-namespace DataAccess.Repositorio;
+namespace VantaGym.Repositorio;
 
-public class HistoricoTreinoRepositorio : BaseRepositorio
+public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepositorio
 {
     public HistoricoTreinoRepositorio(VantaGymContexto contexto) : base(contexto)
     {

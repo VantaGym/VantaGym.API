@@ -3,7 +3,7 @@ using VantaGym.Dominio.Entidades;
 
 namespace DataAccess.Repositorio;
 
-public class UsuarioRepositorio : BaseRepositorio
+public class UsuarioRepositorio : BaseRepositorio, IUsuarioRepositorio
 {
     public UsuarioRepositorio(VantaGymContexto contexto) : base(contexto)
     {
@@ -45,7 +45,7 @@ public class UsuarioRepositorio : BaseRepositorio
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Usuario>> ListarAsync(string busca)
+    public async Task<IEnumerable<Usuario>> ListarAsync()
     {
         return await _contexto.Usuarios
             .AsNoTracking()

@@ -16,10 +16,6 @@ public class ExercicioConfiguracoes : IEntityTypeConfiguration<Exercicio>
         builder.Property(nameof(Exercicio.Series)).HasColumnName("Series").IsRequired(true);
         builder.Property(nameof(Exercicio.Repeticoes)).HasColumnName("Repeticoes").IsRequired(true);
         builder.Property(nameof(Exercicio.GrupoMuscular)).HasColumnName("GrupoMuscular").HasConversion<string>().IsRequired(true);
-        builder.Property(nameof(Exercicio.FichaTreinoID)).HasColumnName("FichaTreinoID").IsRequired(true);
-
-        builder.HasOne(x => x.FichaTreino)
-            .WithMany(x => x.Exercicios)
-            .HasForeignKey(x => x.FichaTreinoID);
+        builder.Property(nameof(Exercicio.Ativo)).HasColumnName("Ativo").IsRequired(true);
     }
 }
