@@ -32,6 +32,7 @@ public class FichaTreinoRepositorio : BaseRepositorio, IFichaTreinoRepositorio
     public async Task<FichaTreino> ObterAsync(int fichaTreinoId)
     {
         return await _contexto.FichaTreinos
+            .Include(u => u.Exercicios)
             .Where(u => u.ID == fichaTreinoId)
             .Where(u => u.Ativo)
             .FirstOrDefaultAsync();

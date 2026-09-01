@@ -1,4 +1,7 @@
+using VantaGym.Aplicacao.Models.Requisicao;
+using VantaGym.Api.Models.Resposta;
 using VantaGym.Dominio.Entidades;
+using VantaGym.Aplicacao.Models.Resposta;
 
 namespace VantaGym.Aplicacao;
 
@@ -9,36 +12,70 @@ public class FichaTreinoAplicacao
     {
         _fichaTreinoRepositorio = fichaTreinoRepositorio;
     }
-    public async Task<int> CriarAsync(FichaTreino fichaTreino)
+    public async Task<int> CriarAsync(FichaTreinoCriar fichaTreinoCriar)
     {
-        if (fichaTreino == null)
+        if (fichaTreinoCriar == null)
             throw new Exception("A ficha de treino não pode ser vazia!");
+
+        var fichaTreino = new FichaTreino
+        {
+            Nome = fichaTreinoCriar.Nome,
+            UsuarioID = fichaTreinoCriar.UsuarioID,
+        };
 
         return await _fichaTreinoRepositorio.SalvarAsync(fichaTreino);
     }
-    public async Task<FichaTreino> ObterAsync(int fichaTreinoID)
+    public async Task<FichaTreinoResposta> ObterAsync(int fichaTreinoID)
     {
-        var fichaTreinoDominio = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoID);
+        var fichaTreino = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoID);
+
+        if (fichaTreino == null)
+            throw new Exception("Ficha de treino não encontrada!");
+
+        var fichaTreinoResposta = new FichaTreinoResposta
+        {
+            ID = fichaTreino.ID,
+            Nome = fichaTreino.Nome,
+            Exercicios = fichaTreino.Exercicios.Select(exercicio => new ExercicioResposta
+            {
+                ID = exercicio.ID,
+                Nome = exercicio.Nome,
+                Series = exercicio.Series,
+                Repeticoes = exercicio.Repeticoes,
+                GrupoMuscular = exercicio.GrupoMuscular
+            }).ToList()
+        };
+
+        return fichaTreinoResposta;
+    }
+    public async Task<IEnumerable<FichaTreinoResposta>> ListarAsync()
+    {
+        var fichas = await _fichaTreinoRepositorio.ListarAsync();
+
+        var fichasResposta = fichas.Select(fichaTreino => new FichaTreinoResposta
+        {
+            ID = fichaTreino.ID,
+            Nome = fichaTreino.Nome,
+            Exercicios = fichaTreino.Exercicios.Select(exercicio => new ExercicioResposta
+            {
+                ID = exercicio.ID,
+                Nome = exercicio.Nome,
+                Series = exercicio.Series,
+                Repeticoes = exercicio.Repeticoes,
+                GrupoMuscular = exercicio.GrupoMuscular
+            }).ToList()
+        }).ToList();
+
+        return fichasResposta;
+    }
+    public async Task AtualizarAsync(FichaTreinoAtualizar fichaTreinoAtualizar)
+    {
+        var fichaTreinoDominio = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoAtualizar.ID);
 
         if (fichaTreinoDominio == null)
             throw new Exception("Ficha de treino não encontrada!");
 
-        return fichaTreinoDominio;
-    }
-    public async Task<IEnumerable<FichaTreino>> ListarAsync()
-    {
-        return await _fichaTreinoRepositorio.ListarAsync();
-    }
-    public async Task AtualizarAsync(FichaTreino fichaTreino)
-    {
-        var fichaTreinoDominio = await _fichaTreinoRepositorio.ObterAsync(fichaTreino.ID);
-
-        if (fichaTreinoDominio == null)
-            throw new Exception("Ficha de treino não encontrada!");
-
-        fichaTreinoDominio.Nome = fichaTreino.Nome;
-        fichaTreino.Exercicios = fichaTreino.Exercicios;
-        fichaTreino.UsuarioID = fichaTreino.UsuarioID;
+        fichaTreinoDominio.Nome = fichaTreinoAtualizar.Nome;
 
         await _fichaTreinoRepositorio.AtualizarAsync(fichaTreinoDominio);
     }
