@@ -1,5 +1,8 @@
 using VantaGym.Dominio.Entidades;
+using VantaGym.Api.Models.Requisicao;
+using VantaGym.Api.Models.Resposta;
 using System.Net.Mail;
+using VantaGym.Aplicacao.Models.Requisicao;
 
 namespace VantaGym.Aplicacao;
 
@@ -10,10 +13,17 @@ public class UsuarioAplicacao : IUsuarioAplicacao
     {
         _usuarioRepositorio = usuarioRepositorio;
     }
-    public async Task<int> CriarAsync(Usuario usuario)
+    public async Task<int> CriarAsync(UsuarioCriar usuarioCriar)
     {
-        if (usuario == null)
+        if (usuarioCriar == null)
             throw new Exception("Usuário não pode ser vazio!");
+
+        var usuario = new Usuario
+        {
+            Nome = usuarioCriar.Nome,
+            Email = usuarioCriar.Email,
+            Senha = usuarioCriar.Senha
+        };
 
         ValidarInformacoesUsuario(usuario);
 
@@ -22,51 +32,59 @@ public class UsuarioAplicacao : IUsuarioAplicacao
 
         return await _usuarioRepositorio.SalvarAsync(usuario);
     }
-    public async Task<Usuario> ObterAsync(int usuarioID)
+    public async Task<UsuarioResposta> ObterAsync(int usuarioID)
     {
         var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioID);
         if (usuarioDominio == null)
             throw new Exception("Usuário não encontrado!");
 
-        return usuarioDominio;
+        var usuarioResposta = new UsuarioResposta()
+        {
+            Id = usuarioDominio.ID,
+            Nome = usuarioDominio.Nome,
+            Email = usuarioDominio.Email
+        };
+
+        return usuarioResposta;
     }
-    public async Task<Usuario> ObterPorEmailAsync(string email)
+    public async Task<IEnumerable<UsuarioResposta>> ListarAsync()
     {
-        var usuarioDominio = await _usuarioRepositorio.ObterPorEmailAsync(email);
+        var usuarios = await _usuarioRepositorio.ListarAsync();
+
+        var usuariosResposta = usuarios.Select(usuario => new UsuarioResposta
+        {
+            Id = usuario.ID,
+            Nome = usuario.Nome,
+            Email = usuario.Email
+        }).ToList();
+
+        return usuariosResposta;
+    }
+    public async Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar)
+    {
+        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioAtualizar.ID);
+
         if (usuarioDominio == null)
             throw new Exception("Usuário não encontrado!");
 
-        return usuarioDominio;
-    }
-    public async Task<IEnumerable<Usuario>> ListarAsync()
-    {
-        return await _usuarioRepositorio.ListarAsync();
-    }
-    public async Task AtualizarAsync(Usuario usuario)
-    {
-        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuario.ID);
+        usuarioDominio.Nome = usuarioAtualizar.Nome;
+        usuarioDominio.Email = usuarioAtualizar.Email;
 
-        if (usuarioDominio == null)
-            throw new Exception("Usuário não encontrado!");
-
-        ValidarInformacoesUsuario(usuario);
-
-        usuarioDominio.Nome = usuario.Nome;
-        usuarioDominio.Email = usuario.Email;
+        ValidarInformacoesUsuario(usuarioDominio);
 
         await _usuarioRepositorio.AtualizarAsync(usuarioDominio);
     }
-    public async Task AlterarSenhaAsync(Usuario usuario, string senhaAntiga)
+    public async Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha)
     {
-        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuario.ID);
+        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioAlterarSenha.ID);
 
         if (usuarioDominio == null)
             throw new Exception("Usuário não encontrado!");
 
-        if (usuarioDominio.Senha != senhaAntiga)
+        if (usuarioDominio.Senha != usuarioAlterarSenha.SenhaAntiga)
             throw new Exception("Senha antiga inválida");
 
-        usuarioDominio.Senha = usuario.Senha;
+        usuarioDominio.Senha = usuarioAlterarSenha.Senha;
         await _usuarioRepositorio.AtualizarAsync(usuarioDominio);
     }
     public async Task DeletarAsync(int usuarioID)
@@ -91,9 +109,9 @@ public class UsuarioAplicacao : IUsuarioAplicacao
         if (!EmailValido(usuario.Email))
             throw new Exception("Responsável deve ser um e-mail válido!");
     }
-
     private static bool EmailValido(string email)
     {
+
         try
         {
             var endereco = new MailAddress(email);

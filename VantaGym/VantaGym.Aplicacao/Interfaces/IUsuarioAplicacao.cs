@@ -1,15 +1,17 @@
 using VantaGym.Dominio.Entidades;
+using VantaGym.Aplicacao.Models.Requisicao;
+using VantaGym.Api.Models.Resposta;
+using VantaGym.Api.Models.Requisicao;
 
 namespace VantaGym.Aplicacao
 {
     public interface IUsuarioAplicacao
     {
-        Task<int> CriarAsync(Usuario usuario);
-        Task AlterarSenhaAsync(Usuario usuario, string novaSenha);
-        Task AtualizarAsync(Usuario usuario);
+        Task<int> CriarAsync(UsuarioCriar usuarioCriar);
+        Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha);
+        Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar);
         Task DeletarAsync(int usuarioID);
-        Task<IEnumerable<Usuario>> ListarAsync();
-        Task<Usuario> ObterAsync(int usuarioID);
-        Task<Usuario> ObterPorEmailAsync(string email);
+        Task<IEnumerable<UsuarioResposta>> ListarAsync();
+        Task<UsuarioResposta> ObterAsync(int usuarioID);
     }
 }
