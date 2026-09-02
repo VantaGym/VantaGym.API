@@ -1,8 +1,22 @@
+using DataAccess.Repositorio;
+using VantaGym.Aplicacao;
+using Microsoft.EntityFrameworkCore;
+using DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IUsuarioAplicacao, UsuarioAplicacao>();
+builder.Services.AddScoped<IExercicioAplicacao, ExercicioAplicacao>();
+
+// Add interfaces to the databases
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IExercicioRepositorio, ExercicioRepositorio>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<VantaGymContexto>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

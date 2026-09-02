@@ -28,5 +28,7 @@ public class HistoricoTreinoConfiguracoes : IEntityTypeConfiguration<HistoricoTr
             .WithMany()
             .HasForeignKey(x => x.ExercicioID)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasQueryFilter(x => x.Ativo);
     }
 }

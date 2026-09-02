@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VantaGym.Repositorio.Migrations
 {
     [DbContext(typeof(VantaGymContexto))]
-    [Migration("20260812173548_CriarTabelas")]
+    [Migration("20260902173701_CriarTabelas")]
     partial class CriarTabelas
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,12 @@ namespace VantaGym.Repositorio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit")
+                        .HasColumnName("Ativo");
+
                     b.Property<int>("FichaTreinoID")
-                        .HasColumnType("int")
-                        .HasColumnName("FichaTreinoID");
+                        .HasColumnType("int");
 
                     b.Property<string>("GrupoMuscular")
                         .IsRequired()
@@ -70,7 +73,7 @@ namespace VantaGym.Repositorio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<bool>("Ativa")
+                    b.Property<bool>("Ativo")
                         .HasColumnType("bit")
                         .HasColumnName("Ativa");
 
@@ -99,6 +102,10 @@ namespace VantaGym.Repositorio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit")
+                        .HasColumnName("Ativo");
+
                     b.Property<decimal>("CargaKg")
                         .HasPrecision(6, 2)
                         .HasColumnType("decimal(6,2)")
@@ -120,17 +127,11 @@ namespace VantaGym.Repositorio.Migrations
                         .HasColumnType("int")
                         .HasColumnName("RepeticoesFeitas");
 
-                    b.Property<int>("UsuarioID")
-                        .HasColumnType("int")
-                        .HasColumnName("UsuarioID");
-
                     b.HasKey("ID");
 
                     b.HasIndex("ExercicioID");
 
                     b.HasIndex("FichaTreinoID");
-
-                    b.HasIndex("UsuarioID");
 
                     b.ToTable("HistoricoTreino", (string)null);
                 });
@@ -143,6 +144,10 @@ namespace VantaGym.Repositorio.Migrations
                         .HasColumnName("UsuarioID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit")
+                        .HasColumnName("Ativo");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -169,7 +174,7 @@ namespace VantaGym.Repositorio.Migrations
                     b.HasOne("VantaGym.Dominio.Entidades.FichaTreino", "FichaTreino")
                         .WithMany("Exercicios")
                         .HasForeignKey("FichaTreinoID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("FichaTreino");
@@ -178,9 +183,9 @@ namespace VantaGym.Repositorio.Migrations
             modelBuilder.Entity("VantaGym.Dominio.Entidades.FichaTreino", b =>
                 {
                     b.HasOne("VantaGym.Dominio.Entidades.Usuario", "Usuario")
-                        .WithMany("FichasTreino")
+                        .WithMany()
                         .HasForeignKey("UsuarioID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -200,29 +205,14 @@ namespace VantaGym.Repositorio.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("VantaGym.Dominio.Entidades.Usuario", "Usuario")
-                        .WithMany("HistoricoTreino")
-                        .HasForeignKey("UsuarioID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Exercicio");
 
                     b.Navigation("FichaTreino");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("VantaGym.Dominio.Entidades.FichaTreino", b =>
                 {
                     b.Navigation("Exercicios");
-                });
-
-            modelBuilder.Entity("VantaGym.Dominio.Entidades.Usuario", b =>
-                {
-                    b.Navigation("FichasTreino");
-
-                    b.Navigation("HistoricoTreino");
                 });
 #pragma warning restore 612, 618
         }

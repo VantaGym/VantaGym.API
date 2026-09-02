@@ -10,5 +10,6 @@ namespace VantaGym.Aplicacao
         Task DeletarAsync(int exercicioID);
         Task<IEnumerable<ExercicioResposta>> ListarAsync();
         Task<ExercicioResposta> ObterAsync(int usuarioID);
+        List<GrupoMuscularResposta> ListarGruposMusculares();
     }
 }

@@ -24,5 +24,7 @@ public class FichaTreinoConfiguracoes : IEntityTypeConfiguration<FichaTreino>
             .WithOne(x => x.FichaTreino)
             .HasForeignKey(x => x.FichaTreinoID)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasQueryFilter(x => x.Ativo);
     }
 }

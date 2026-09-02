@@ -1,6 +1,7 @@
 using VantaGym.Dominio.Entidades;
 using VantaGym.Aplicacao.DTOs.Requisicao;
 using VantaGym.Api.DTOs.Resposta;
+using VantaGym.Dominio.Enumeradores;
 
 namespace VantaGym.Aplicacao;
 
@@ -85,5 +86,14 @@ public class ExercicioAplicacao : IExercicioAplicacao
             throw new Exception("Exercício não encontrado!");
 
         await _exercicioRepositorio.DeleteAsync(exercicioDominio);
+    }
+    public List<GrupoMuscularResposta> ListarGruposMusculares()
+    {
+        return Enum.GetValues(typeof(GrupoMuscular)).Cast<GrupoMuscular>()
+            .Select(grupo => new GrupoMuscularResposta
+            {
+                ID = (int)grupo,
+                Nome = grupo.ToString()
+            }).ToList();
     }
 }

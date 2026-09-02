@@ -17,5 +17,7 @@ public class ExercicioConfiguracoes : IEntityTypeConfiguration<Exercicio>
         builder.Property(nameof(Exercicio.Repeticoes)).HasColumnName("Repeticoes").IsRequired(true);
         builder.Property(nameof(Exercicio.GrupoMuscular)).HasColumnName("GrupoMuscular").HasConversion<string>().IsRequired(true);
         builder.Property(nameof(Exercicio.Ativo)).HasColumnName("Ativo").IsRequired(true);
+
+        builder.HasQueryFilter(x => x.Ativo);
     }
 }

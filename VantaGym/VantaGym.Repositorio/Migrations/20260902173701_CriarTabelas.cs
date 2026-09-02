@@ -17,7 +17,8 @@ namespace VantaGym.Repositorio.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +43,7 @@ namespace VantaGym.Repositorio.Migrations
                         column: x => x.UsuarioID,
                         principalTable: "Usuario",
                         principalColumn: "UsuarioID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,6 +56,7 @@ namespace VantaGym.Repositorio.Migrations
                     Series = table.Column<int>(type: "int", nullable: false),
                     Repeticoes = table.Column<int>(type: "int", nullable: false),
                     GrupoMuscular = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false),
                     FichaTreinoID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -65,7 +67,7 @@ namespace VantaGym.Repositorio.Migrations
                         column: x => x.FichaTreinoID,
                         principalTable: "FichaTreino",
                         principalColumn: "FichaTreinoID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -77,8 +79,8 @@ namespace VantaGym.Repositorio.Migrations
                     CargaKg = table.Column<decimal>(type: "decimal(6,2)", precision: 6, scale: 2, nullable: false),
                     RepeticoesFeitas = table.Column<int>(type: "int", nullable: false),
                     DataExecucao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false),
                     FichaTreinoID = table.Column<int>(type: "int", nullable: false),
-                    UsuarioID = table.Column<int>(type: "int", nullable: false),
                     ExercicioID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -95,12 +97,6 @@ namespace VantaGym.Repositorio.Migrations
                         column: x => x.FichaTreinoID,
                         principalTable: "FichaTreino",
                         principalColumn: "FichaTreinoID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_HistoricoTreino_Usuario_UsuarioID",
-                        column: x => x.UsuarioID,
-                        principalTable: "Usuario",
-                        principalColumn: "UsuarioID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -123,11 +119,6 @@ namespace VantaGym.Repositorio.Migrations
                 name: "IX_HistoricoTreino_FichaTreinoID",
                 table: "HistoricoTreino",
                 column: "FichaTreinoID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HistoricoTreino_UsuarioID",
-                table: "HistoricoTreino",
-                column: "UsuarioID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

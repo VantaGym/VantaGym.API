@@ -84,7 +84,7 @@ public class UsuarioAplicacao : IUsuarioAplicacao
         if (usuarioDominio.Senha != usuarioAlterarSenha.SenhaAntiga)
             throw new Exception("Senha antiga inválida");
 
-        usuarioDominio.Senha = usuarioAlterarSenha.Senha;
+        usuarioDominio.Senha = usuarioAlterarSenha.SenhaNova;
         await _usuarioRepositorio.AtualizarAsync(usuarioDominio);
     }
     public async Task DeletarAsync(int usuarioID)
