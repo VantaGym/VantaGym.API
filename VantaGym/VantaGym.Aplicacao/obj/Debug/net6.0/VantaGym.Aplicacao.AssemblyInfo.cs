@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VantaGym.Aplicacao")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e6efb32769703da239867819dd6dcf5e92c0eea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c728840c1a10b053354c9788a847d68e91912aa")]
 [assembly: System.Reflection.AssemblyProductAttribute("VantaGym.Aplicacao")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VantaGym.Aplicacao")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

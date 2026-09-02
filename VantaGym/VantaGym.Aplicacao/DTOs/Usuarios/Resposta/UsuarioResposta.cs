@@ -1,4 +1,4 @@
-namespace VantaGym.Api.Models.Resposta
+namespace VantaGym.Api.DTOs.Resposta
 {
     public class UsuarioResposta
     {

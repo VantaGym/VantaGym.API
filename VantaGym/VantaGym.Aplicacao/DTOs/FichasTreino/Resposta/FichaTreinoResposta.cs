@@ -1,6 +1,6 @@
-using VantaGym.Api.Models.Resposta;
+using VantaGym.Api.DTOs.Resposta;
 
-namespace VantaGym.Aplicacao.Models.Resposta
+namespace VantaGym.Aplicacao.DTOs.Resposta
 {
     public class FichaTreinoResposta
     {

@@ -1,8 +1,8 @@
 using VantaGym.Dominio.Entidades;
-using VantaGym.Api.Models.Requisicao;
-using VantaGym.Api.Models.Resposta;
+using VantaGym.Api.DTOs.Requisicao;
+using VantaGym.Api.DTOs.Resposta;
 using System.Net.Mail;
-using VantaGym.Aplicacao.Models.Requisicao;
+using VantaGym.Aplicacao.DTOs.Requisicao;
 
 namespace VantaGym.Aplicacao;
 

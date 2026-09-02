@@ -1,6 +1,6 @@
 using VantaGym.Dominio.Entidades;
 
-namespace VantaGym.Aplicacao.Models.Requisicao
+namespace VantaGym.Aplicacao.DTOs.Requisicao
 {
     public class FichaTreinoCriar
     {

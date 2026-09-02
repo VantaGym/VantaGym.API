@@ -1,6 +1,5 @@
-using VantaGym.Aplicacao.Models.Requisicao;
-using VantaGym.Api.Models.Resposta;
-using VantaGym.Api.Models.Requisicao;
+using VantaGym.Aplicacao.DTOs.Requisicao;
+using VantaGym.Api.DTOs.Resposta;
 
 namespace VantaGym.Aplicacao
 {
@@ -8,7 +7,7 @@ namespace VantaGym.Aplicacao
     {
         Task<int> CriarAsync(ExercicioCriar exercicioCriar);
         Task AtualizarAsync(ExercicioAtualizar exercicioAtualizar);
-        Task DeletarAsync(int usuarioID);
+        Task DeletarAsync(int exercicioID);
         Task<IEnumerable<ExercicioResposta>> ListarAsync();
         Task<ExercicioResposta> ObterAsync(int usuarioID);
     }

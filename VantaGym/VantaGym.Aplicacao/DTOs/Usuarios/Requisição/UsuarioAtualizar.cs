@@ -1,4 +1,4 @@
-namespace VantaGym.Api.Models.Requisicao
+namespace VantaGym.Api.DTOs.Requisicao
 {
     public class UsuarioAtualizar
     {

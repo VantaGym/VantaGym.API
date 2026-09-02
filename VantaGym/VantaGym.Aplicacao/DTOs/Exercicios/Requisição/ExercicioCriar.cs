@@ -1,10 +1,9 @@
 using VantaGym.Dominio.Enumeradores;
 
-namespace VantaGym.Aplicacao.Models.Requisicao
+namespace VantaGym.Aplicacao.DTOs.Requisicao
 {
-    public class ExercicioAtualizar
+    public class ExercicioCriar
     {
-        public int ID { get; set; }
         public string Nome { get; set; }
         public int Series { get; set; }
         public int Repeticoes { get; set; }

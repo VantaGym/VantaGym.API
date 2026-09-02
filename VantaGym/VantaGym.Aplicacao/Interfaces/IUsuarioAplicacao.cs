@@ -1,7 +1,7 @@
 using VantaGym.Dominio.Entidades;
-using VantaGym.Aplicacao.Models.Requisicao;
-using VantaGym.Api.Models.Resposta;
-using VantaGym.Api.Models.Requisicao;
+using VantaGym.Aplicacao.DTOs.Requisicao;
+using VantaGym.Api.DTOs.Resposta;
+using VantaGym.Api.DTOs.Requisicao;
 
 namespace VantaGym.Aplicacao
 {

@@ -1,4 +1,4 @@
-namespace VantaGym.Aplicacao.Models.Requisicao
+namespace VantaGym.Aplicacao.DTOs.Requisicao
 {
     public class FichaTreinoAtualizar
     {
