@@ -32,14 +32,14 @@ public class ExercicioRepositorio : BaseRepositorio, IExercicioRepositorio
     public async Task<Exercicio> ObterAsync(int exercicioId)
     {
         return await _contexto.Exercicios
-            .Where(u => u.ID == exercicioId)
-            .Where(u => u.Ativo)
+            .Include(e => e.FichaTreino)
+            .Where(e => e.ID == exercicioId)
             .FirstOrDefaultAsync();
     }
-
     public async Task<IEnumerable<Exercicio>> ListarAsync()
     {
         return await _contexto.Exercicios
+            .Include(e => e.FichaTreino)
             .AsNoTracking()
             .ToListAsync();
     }

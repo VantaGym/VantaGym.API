@@ -8,7 +8,7 @@ namespace VantaGym.Aplicacao
         Task<int> CriarAsync(FichaTreinoCriar fichaTreinoCriar);
         Task AtualizarAsync(FichaTreinoAtualizar fichaTreinoAtualizar);
         Task DeletarAsync(int fichaTreinoID);
-        Task<IEnumerable<FichaTreinoResposta>> ListarAsync();
+        Task<IEnumerable<FichaTreinoListar>> ListarAsync();
         Task<FichaTreinoResposta> ObterAsync(int fichaTreinoID);
     }
 }

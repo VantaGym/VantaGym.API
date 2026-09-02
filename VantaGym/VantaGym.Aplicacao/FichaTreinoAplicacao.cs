@@ -5,7 +5,7 @@ using VantaGym.Aplicacao.DTOs.Resposta;
 
 namespace VantaGym.Aplicacao;
 
-public class FichaTreinoAplicacao
+public class FichaTreinoAplicacao : IFichaTreinoAplicacao
 {
     readonly IFichaTreinoRepositorio _fichaTreinoRepositorio;
     public FichaTreinoAplicacao(IFichaTreinoRepositorio fichaTreinoRepositorio)
@@ -48,22 +48,14 @@ public class FichaTreinoAplicacao
 
         return fichaTreinoResposta;
     }
-    public async Task<IEnumerable<FichaTreinoResposta>> ListarAsync()
+    public async Task<IEnumerable<FichaTreinoListar>> ListarAsync()
     {
         var fichas = await _fichaTreinoRepositorio.ListarAsync();
 
-        var fichasResposta = fichas.Select(fichaTreino => new FichaTreinoResposta
+        var fichasResposta = fichas.Select(fichaTreino => new FichaTreinoListar
         {
             ID = fichaTreino.ID,
-            Nome = fichaTreino.Nome,
-            Exercicios = fichaTreino.Exercicios.Select(exercicio => new ExercicioResposta
-            {
-                ID = exercicio.ID,
-                Nome = exercicio.Nome,
-                Series = exercicio.Series,
-                Repeticoes = exercicio.Repeticoes,
-                GrupoMuscular = exercicio.GrupoMuscular
-            }).ToList()
+            Nome = fichaTreino.Nome
         }).ToList();
 
         return fichasResposta;

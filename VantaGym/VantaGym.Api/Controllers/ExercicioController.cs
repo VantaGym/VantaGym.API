@@ -31,7 +31,7 @@ namespace VantaGym.Api
 
         [HttpGet]
         [Route("Obter/{exercicioID}")]
-        public async Task<ActionResult> ObterAsync([FromBody] int exercicioID)
+        public async Task<ActionResult> ObterAsync([FromRoute] int exercicioID)
         {
             try
             {

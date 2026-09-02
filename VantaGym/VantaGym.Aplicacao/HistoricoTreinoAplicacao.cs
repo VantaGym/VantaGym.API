@@ -8,22 +8,29 @@ namespace VantaGym.Aplicacao;
 public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 {
     readonly IHistoricoTreinoRepositorio _historicoTreinoRepositorio;
-    public HistoricoTreinoAplicacao(IHistoricoTreinoRepositorio historicoTreinoRepositorio)
+    readonly IExercicioRepositorio _exercicioRepositorio;
+    public HistoricoTreinoAplicacao(IHistoricoTreinoRepositorio historicoTreinoRepositorio, IExercicioRepositorio exercicioRepositorio)
     {
         _historicoTreinoRepositorio = historicoTreinoRepositorio;
+        _exercicioRepositorio = exercicioRepositorio;
     }
     public async Task<int> CriarAsync(HistoricoTreinoCriar historicoCriar)
     {
         if (historicoCriar == null)
             throw new Exception("Histórico não pode ser vazio!");
 
+        var exercicio = await _exercicioRepositorio.ObterAsync(historicoCriar.ExercicioID);
+
+        if (exercicio == null)
+            throw new Exception("Exercício não encontrado!");
+
         var historico = new HistoricoTreino
         {
             CargaKg = historicoCriar.CargaKg,
             RepeticoesFeitas = historicoCriar.RepeticoesFeitas,
             DataExecucao = DateTime.Now,
-            FichaTreinoID = historicoCriar.FichaTreinoID,
-            ExercicioID = historicoCriar.ExercicioID
+            ExercicioID = exercicio.ID,
+            FichaTreinoID = exercicio.FichaTreinoID
         };
 
         return await _historicoTreinoRepositorio.SalvarAsync(historico);

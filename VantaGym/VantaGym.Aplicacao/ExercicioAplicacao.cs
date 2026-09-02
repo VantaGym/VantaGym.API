@@ -44,7 +44,6 @@ public class ExercicioAplicacao : IExercicioAplicacao
             GrupoMuscular = exercicioDominio.GrupoMuscular,
             FichaTreinoNome = exercicioDominio.FichaTreino.Nome
         };
-
         return exercicioResposta;
     }
     public async Task<IEnumerable<ExercicioResposta>> ListarAsync()

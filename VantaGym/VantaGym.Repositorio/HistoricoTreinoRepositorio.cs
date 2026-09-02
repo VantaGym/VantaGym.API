@@ -32,6 +32,8 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
     public async Task<HistoricoTreino> ObterAsync(int historicoTreinoId)
     {
         return await _contexto.HistoricoTreinos
+            .Include(e => e.FichaTreino)
+            .Include(e => e.Exercicio)
             .Where(u => u.ID == historicoTreinoId)
             .Where(u => u.Ativo)
             .FirstOrDefaultAsync();
@@ -40,6 +42,8 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
     public async Task<IEnumerable<HistoricoTreino>> ListarAsync()
     {
         return await _contexto.HistoricoTreinos
+            .Include(e => e.FichaTreino)
+            .Include(e => e.Exercicio)
             .AsNoTracking()
             .ToListAsync();
     }

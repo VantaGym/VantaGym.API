@@ -6,7 +6,6 @@ namespace VantaGym.Aplicacao.DTOs.Requisicao
     {
         public decimal CargaKg { get; set; }
         public int RepeticoesFeitas { get; set; }
-        public int FichaTreinoID { get; set; }
         public int ExercicioID { get; set; }
     }
 }
