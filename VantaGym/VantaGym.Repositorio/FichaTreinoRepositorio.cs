@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VantaGym.Dominio.Entidades;
+using Dapper;
+using System.Data;
 
 namespace DataAccess.Repositorio;
 
@@ -31,17 +33,22 @@ public class FichaTreinoRepositorio : BaseRepositorio, IFichaTreinoRepositorio
 
     public async Task<FichaTreino> ObterAsync(int fichaTreinoId)
     {
-        return await _contexto.FichaTreinos
-            .Include(u => u.Exercicios)
-            .Where(u => u.ID == fichaTreinoId)
-            .Where(u => u.Ativo)
-            .FirstOrDefaultAsync();
+        var parametros = new { FichaTreinoID = fichaTreinoId };
+
+        using var resultado = await _contexto.Database.GetDbConnection().QueryMultipleAsync(
+                "sp_FichaTreino_Obter", parametros, commandType: CommandType.StoredProcedure);
+
+        var fichaTreino = await resultado.ReadFirstOrDefaultAsync<FichaTreino>();
+        if (fichaTreino != null)
+        {
+            fichaTreino.Exercicios = (await resultado.ReadAsync<Exercicio>()).ToList();
+        }
+        return fichaTreino;
     }
 
     public async Task<IEnumerable<FichaTreino>> ListarAsync()
     {
-        return await _contexto.FichaTreinos
-            .AsNoTracking()
-            .ToListAsync();
+        return await _contexto.Database.GetDbConnection().QueryAsync<FichaTreino>(
+            "sp_FichaTreino_Listar", commandType: CommandType.StoredProcedure);
     }
 }

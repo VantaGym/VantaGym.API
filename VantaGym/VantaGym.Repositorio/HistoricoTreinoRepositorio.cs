@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VantaGym.Dominio.Entidades;
+using Dapper;
+using System.Data;
 
 namespace VantaGym.Repositorio;
 
@@ -31,20 +33,27 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
 
     public async Task<HistoricoTreino> ObterAsync(int historicoTreinoId)
     {
-        return await _contexto.HistoricoTreinos
-            .Include(e => e.FichaTreino)
-            .Include(e => e.Exercicio)
-            .Where(u => u.ID == historicoTreinoId)
-            .Where(u => u.Ativo)
-            .FirstOrDefaultAsync();
+        var parametros = new { HistoricoTreinoID = historicoTreinoId };
+
+        var historicos = await _contexto.Database.GetDbConnection().QueryAsync<HistoricoTreino, FichaTreino, Exercicio, HistoricoTreino>(
+                "sp_HistoricoTreino_Obter", (historico, fichaTreino, exercicio) =>
+                {
+                    historico.FichaTreino = fichaTreino;
+                    historico.Exercicio = exercicio;
+                    return historico;
+                }, parametros, splitOn: "ID,ID", commandType: CommandType.StoredProcedure);
+
+        return historicos.FirstOrDefault();
     }
 
     public async Task<IEnumerable<HistoricoTreino>> ListarAsync()
     {
-        return await _contexto.HistoricoTreinos
-            .Include(e => e.FichaTreino)
-            .Include(e => e.Exercicio)
-            .AsNoTracking()
-            .ToListAsync();
+        return await _contexto.Database.GetDbConnection().QueryAsync<HistoricoTreino, FichaTreino, Exercicio, HistoricoTreino>(
+                "sp_HistoricoTreino_Listar", (historico, fichaTreino, exercicio) =>
+                {
+                    historico.FichaTreino = fichaTreino;
+                    historico.Exercicio = exercicio;
+                    return historico;
+                }, splitOn: "ID,ID", commandType: CommandType.StoredProcedure);
     }
 }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using VantaGym.Dominio.Entidades;
+using Dapper;
+using System.Data;
 
 namespace DataAccess.Repositorio;
 
@@ -31,24 +33,21 @@ public class UsuarioRepositorio : BaseRepositorio, IUsuarioRepositorio
 
     public async Task<Usuario> ObterAsync(int usuarioId)
     {
-        return await _contexto.Usuarios
-            .Where(u => u.ID == usuarioId)
-            .Where(u => u.Ativo)
-            .FirstOrDefaultAsync();
+        var parametros = new { UsuarioID = usuarioId };
+        return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<Usuario>(
+            "sp_Usuario_Obter", parametros, commandType: CommandType.StoredProcedure);
     }
 
     public async Task<Usuario> ObterPorEmailAsync(string email)
     {
-        return await _contexto.Usuarios
-            .Where(u => u.Email == email)
-            .Where(u => u.Ativo)
-            .FirstOrDefaultAsync();
+        var parametros = new { Email = email };
+        return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<Usuario>(
+            "sp_Usuario_ObterPorEmail", parametros, commandType: CommandType.StoredProcedure);
     }
 
     public async Task<IEnumerable<Usuario>> ListarAsync()
     {
-        return await _contexto.Usuarios
-            .AsNoTracking()
-            .ToListAsync();
+        return await _contexto.Database.GetDbConnection().QueryAsync<Usuario>(
+            "sp_Usuario_Listar",commandType: CommandType.StoredProcedure);
     }
 }
