@@ -5,6 +5,7 @@ public class HistoricoTreino
     public int ID { get; set; }
     public decimal CargaKg { get; set; }
     public int RepeticoesFeitas { get; set; }
+    public int SeriesFeitas { get; set; }
     public DateTime DataExecucao { get; set; }
     public bool Ativo { get; set; } = true;
 

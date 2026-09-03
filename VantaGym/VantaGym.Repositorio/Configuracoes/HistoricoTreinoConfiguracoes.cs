@@ -14,6 +14,7 @@ public class HistoricoTreinoConfiguracoes : IEntityTypeConfiguration<HistoricoTr
         builder.Property(nameof(HistoricoTreino.ID)).HasColumnName("HistoricoTreinoID");
         builder.Property(nameof(HistoricoTreino.CargaKg)).HasColumnName("CargaKg").HasPrecision(6, 2).IsRequired(true);
         builder.Property(nameof(HistoricoTreino.RepeticoesFeitas)).HasColumnName("RepeticoesFeitas").IsRequired(true);
+        builder.Property(nameof(HistoricoTreino.SeriesFeitas)).HasColumnName("SeriesFeitas").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.DataExecucao)).HasColumnName("DataExecucao").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.FichaTreinoID)).HasColumnName("FichaTreinoID").IsRequired(true);
         builder.Property(nameof(HistoricoTreino.ExercicioID)).HasColumnName("ExercicioID").IsRequired(true);

@@ -26,6 +26,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         var historico = new HistoricoTreino
         {
+            SeriesFeitas = historicoCriar.SeriesFeitas,
             CargaKg = historicoCriar.CargaKg,
             RepeticoesFeitas = historicoCriar.RepeticoesFeitas,
             DataExecucao = DateTime.Now,
@@ -47,6 +48,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
             ID = historicoTreino.ID,
             NomeFicha = historicoTreino.FichaTreino.Nome,
             NomeExercicio = historicoTreino.Exercicio.Nome,
+            SeriesFeitas = historicoTreino.SeriesFeitas,
             CargaKg = historicoTreino.CargaKg,
             RepeticoesFeitas = historicoTreino.RepeticoesFeitas,
             DataExecucao = historicoTreino.DataExecucao
@@ -63,6 +65,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
             ID = historicoTreino.ID,
             NomeFicha = historicoTreino.FichaTreino.Nome,
             NomeExercicio = historicoTreino.Exercicio.Nome,
+            SeriesFeitas = historicoTreino.SeriesFeitas,
             CargaKg = historicoTreino.CargaKg,
             RepeticoesFeitas = historicoTreino.RepeticoesFeitas,
             DataExecucao = historicoTreino.DataExecucao
@@ -78,6 +81,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         if (historicoDominio == null)
             throw new Exception("Histórico de treino não encontrado!");
 
+        historicoDominio.SeriesFeitas = historicoAtualizar.SeriesFeitas;
         historicoDominio.CargaKg = historicoAtualizar.CargaKg;
         historicoDominio.RepeticoesFeitas = historicoAtualizar.RepeticoesFeitas;
 
