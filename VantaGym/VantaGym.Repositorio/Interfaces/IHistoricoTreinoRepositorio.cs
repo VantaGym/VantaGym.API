@@ -5,5 +5,6 @@ public interface IHistoricoTreinoRepositorio
     Task DeleteAsync(HistoricoTreino historicoTreino);
     Task AtualizarAsync(HistoricoTreino historicoTreino);
     Task<HistoricoTreino> ObterAsync(int historicoTreinoId);
-    Task <IEnumerable<HistoricoTreino>> ListarAsync();
+    Task<IEnumerable<HistoricoTreino>> ListarAsync();
+    Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID);
 }

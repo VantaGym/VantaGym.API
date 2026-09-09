@@ -6,6 +6,7 @@ namespace VantaGym.Aplicacao.DTOs.Resposta
     {
         public int ID { get; set; }
         public string Nome { get; set; }
+        public int UsuarioID { get; set; }
         public List<ExercicioResposta> Exercicios { get; set; } = new List<ExercicioResposta>();
     }
 }

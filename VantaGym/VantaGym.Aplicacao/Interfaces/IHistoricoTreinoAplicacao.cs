@@ -1,5 +1,5 @@
 using VantaGym.Aplicacao.DTOs.Requisicao;
-using VantaGym.Aplicacao.DTOs.Resposta;
+using VantaGym.Dominio.Entidades;
 
 namespace VantaGym.Aplicacao
 {
@@ -10,5 +10,9 @@ namespace VantaGym.Aplicacao
         Task DeletarAsync(int historicoTreinoID);
         Task<IEnumerable<HistoricoTreinoResposta>> ListarAsync();
         Task<HistoricoTreinoResposta> ObterAsync(int historicoTreinoID);
+        Task<int> ObterQuantidadeTreinosSemanaAsync();
+        Task<decimal> ObterVolumeUltimoTreinoAsync();
+        Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync();
+        Task<int> ObterQuantidadeExerciciosUltimoTreinoAsync();
     }
 }

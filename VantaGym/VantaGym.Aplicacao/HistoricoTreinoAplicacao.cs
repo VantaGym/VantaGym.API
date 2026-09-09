@@ -96,4 +96,56 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         await _historicoTreinoRepositorio.DeleteAsync(historicoTreinoDominio);
     }
+    public async Task<int> ObterQuantidadeTreinosSemanaAsync()
+    {
+        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var inicioSemana = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+        var treinos = historicos.Where(x => x.DataExecucao >= inicioSemana).GroupBy(x => new
+        {
+            x.DataExecucao.Date,
+            x.FichaTreinoID
+        });
+        return treinos.Count();
+    }
+    public async Task<decimal> ObterVolumeUltimoTreinoAsync()
+    {
+        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+
+        var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
+
+        if (ultimoTreino == null)
+            return 0;
+
+        return await _historicoTreinoRepositorio.ObterVolumeUltimoTreinoAsync(ultimoTreino.DataExecucao, ultimoTreino.FichaTreinoID);
+    }
+    public async Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync()
+    {
+        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+
+        var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
+
+        if (ultimoTreino == null)
+            return null;
+
+        return new HistoricoTreinoResposta
+        {
+            ID = ultimoTreino.ID,
+            NomeFicha = ultimoTreino.FichaTreino.Nome,
+            NomeExercicio = ultimoTreino.Exercicio.Nome,
+            CargaKg = ultimoTreino.CargaKg,
+            RepeticoesFeitas = ultimoTreino.RepeticoesFeitas,
+            SeriesFeitas = ultimoTreino.SeriesFeitas,
+            DataExecucao = ultimoTreino.DataExecucao
+        };
+    }
+    public async Task<int> ObterQuantidadeExerciciosUltimoTreinoAsync()
+    {
+        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
+
+        if (ultimoTreino == null)
+            return 0;
+
+        return historicos.Count(x => x.DataExecucao.Date == ultimoTreino.DataExecucao.Date && x.FichaTreinoID == ultimoTreino.FichaTreinoID);
+    }
 }

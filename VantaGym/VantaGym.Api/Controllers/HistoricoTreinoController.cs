@@ -88,5 +88,37 @@ namespace VantaGym.Api
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("ObterQuantidadeTreinosSemana")]
+        public async Task<IActionResult> ObterQuantidadeTreinosSemanaAsync()
+        {
+            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeTreinosSemanaAsync();
+            return Ok(quantidade);
+        }
+
+        [HttpGet]
+        [Route("ObterVolumeUltimoTreino")]
+        public async Task<IActionResult> ObterVolumeUltimoTreinoAsync()
+        {
+            var volume = await _historicoTreinoAplicacao.ObterVolumeUltimoTreinoAsync();
+            return Ok(volume);
+        }
+
+        [HttpGet]
+        [Route("ObterUltimoTreino")]
+        public async Task<IActionResult> ObterUltimoTreinoAsync()
+        {
+            var ultimoTreino = await _historicoTreinoAplicacao.ObterUltimoTreinoAsync();
+            return Ok(ultimoTreino);
+        }
+
+        [HttpGet]
+        [Route("ObterQuantidadeExerciciosUltimoTreino")]
+        public async Task<IActionResult> ObterQuantidadeExerciciosUltimoTreinoAsync()
+        {
+            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeExerciciosUltimoTreinoAsync();
+            return Ok(quantidade);
+        }
     }
 }

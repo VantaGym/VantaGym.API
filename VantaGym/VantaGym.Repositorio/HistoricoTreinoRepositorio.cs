@@ -54,6 +54,23 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
                     historico.FichaTreino = fichaTreino;
                     historico.Exercicio = exercicio;
                     return historico;
-                }, splitOn: "ID,ID", commandType: CommandType.StoredProcedure);
+                }, splitOn: "FichaID,ExercicioID", commandType: CommandType.StoredProcedure);
+    }
+
+    public async Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID)
+    {
+        var parametros = new
+        {
+            DataExecucao = dataExecucao.Date,
+            FichaTreinoID = fichaTreinoID
+        };
+
+        return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<decimal>(
+            @"SELECT ISNULL(SUM(
+            dbo.fn_CalcularVolumeTreino(CargaKg, RepeticoesFeitas, SeriesFeitas)), 0)
+                FROM HistoricoTreino
+                    WHERE CAST(DataExecucao AS DATE) = @DataExecucao
+                        AND FichaTreinoID = @FichaTreinoID
+                            AND Ativo = 1", parametros);
     }
 }

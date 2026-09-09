@@ -36,6 +36,7 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
         {
             ID = fichaTreino.ID,
             Nome = fichaTreino.Nome,
+            UsuarioID = fichaTreino.UsuarioID,
             Exercicios = fichaTreino.Exercicios.Select(exercicio => new ExercicioResposta
             {
                 ID = exercicio.ID,
