@@ -14,5 +14,7 @@ namespace VantaGym.Aplicacao
         Task<decimal> ObterVolumeUltimoTreinoAsync();
         Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync();
         Task<int> ObterQuantidadeExerciciosUltimoTreinoAsync();
+        Task<decimal> ObterVolumeSemanaAsync();
+        Task<int> ObterTempoDesdeUltimoTreinoAsync();
     }
 }

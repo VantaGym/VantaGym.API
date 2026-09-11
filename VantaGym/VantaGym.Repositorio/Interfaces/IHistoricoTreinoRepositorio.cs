@@ -7,4 +7,5 @@ public interface IHistoricoTreinoRepositorio
     Task<HistoricoTreino> ObterAsync(int historicoTreinoId);
     Task<IEnumerable<HistoricoTreino>> ListarAsync();
     Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID);
+    Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana);
 }

@@ -148,4 +148,20 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return historicos.Count(x => x.DataExecucao.Date == ultimoTreino.DataExecucao.Date && x.FichaTreinoID == ultimoTreino.FichaTreinoID);
     }
+    public async Task<decimal> ObterVolumeSemanaAsync()
+    {
+        var inicioSemana = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+        return await _historicoTreinoRepositorio.ObterVolumeSemanaAsync(inicioSemana);
+    }
+    public async Task<int> ObterTempoDesdeUltimoTreinoAsync()
+    {
+        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+
+        var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
+
+        if (ultimoTreino == null)
+            return 0;
+
+        return (DateTime.Today - ultimoTreino.DataExecucao.Date).Days;
+    }
 }

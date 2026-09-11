@@ -73,4 +73,16 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
                         AND FichaTreinoID = @FichaTreinoID
                             AND Ativo = 1", parametros);
     }
+
+    public async Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana)
+    {
+        var parametros = new { InicioSemana = inicioSemana };
+
+        return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<decimal>(
+            @"SELECT ISNULL(SUM(
+            dbo.fn_CalcularVolumeTreino(CargaKg, RepeticoesFeitas, SeriesFeitas)), 0)
+                FROM HistoricoTreino
+                    WHERE DataExecucao >= @InicioSemana
+                        AND Ativo = 1", parametros);
+    }
 }

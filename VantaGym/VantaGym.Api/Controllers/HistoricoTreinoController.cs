@@ -120,5 +120,21 @@ namespace VantaGym.Api
             var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeExerciciosUltimoTreinoAsync();
             return Ok(quantidade);
         }
+
+        [HttpGet]
+        [Route("ObterVolumeSemana")]
+        public async Task<IActionResult> ObterVolumeSemanaAsync()
+        {
+            var volume = await _historicoTreinoAplicacao.ObterVolumeSemanaAsync();
+            return Ok(volume);
+        }
+
+        [HttpGet]
+        [Route("ObterTempoDesdeUltimoTreino")]
+        public async Task<IActionResult> ObterTempoDesdeUltimoTreinoAsync()
+        {
+            var tempo = await _historicoTreinoAplicacao.ObterTempoDesdeUltimoTreinoAsync();
+            return Ok(tempo);
+        }
     }
 }
