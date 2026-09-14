@@ -21,14 +21,20 @@ public class ExercicioRepositorio : BaseRepositorio, IExercicioRepositorio
 
     public async Task DeleteAsync(Exercicio exercicio)
     {
-        exercicio.Ativo = false;
-        _contexto.Exercicios.Update(exercicio);
+        var exercicioBanco = await _contexto.Exercicios.FirstOrDefaultAsync(x => x.ID == exercicio.ID);
+        exercicioBanco.Ativo = false;
         await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Exercicio exercicio)
     {
-        _contexto.Exercicios.Update(exercicio);
+        var exercicioBanco = await _contexto.Exercicios.FirstOrDefaultAsync(x => x.ID == exercicio.ID);
+
+        exercicioBanco.Nome = exercicio.Nome;
+        exercicioBanco.Series = exercicio.Series;
+        exercicioBanco.Repeticoes = exercicio.Repeticoes;
+        exercicioBanco.GrupoMuscular = exercicio.GrupoMuscular;
+
         await _contexto.SaveChangesAsync();
     }
 

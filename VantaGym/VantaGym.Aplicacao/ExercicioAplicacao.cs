@@ -17,6 +17,12 @@ public class ExercicioAplicacao : IExercicioAplicacao
         if (exercicioCriar == null)
             throw new Exception("Exercício não pode ser vazio!");
 
+        if (exercicioCriar.Series <= 0)
+            throw new Exception("A quantidade de séries não pode ser nula ou negativa!");
+
+        if (exercicioCriar.Repeticoes <= 0)
+            throw new Exception("A quantidade de repetições não pode ser nula ou negativa!");
+
         var exercicio = new Exercicio
         {
             Nome = exercicioCriar.Nome,
@@ -69,11 +75,17 @@ public class ExercicioAplicacao : IExercicioAplicacao
         if (exercicioDominio == null)
             throw new Exception("Exercício não encontrado!");
 
+        if (exercicioAtualizar.Series <= 0)
+            throw new Exception("A quantidade de séries não pode ser nula ou negativa!");
+
+        if (exercicioAtualizar.Repeticoes <= 0)
+            throw new Exception("A quantidade de repetições não pode ser nula ou negativa!");
+
+
         exercicioDominio.Nome = exercicioAtualizar.Nome;
         exercicioDominio.GrupoMuscular = exercicioAtualizar.GrupoMuscular;
-        exercicioDominio.Series = exercicioAtualizar.Series;
-        exercicioDominio.Repeticoes = exercicioAtualizar.Repeticoes;
-        exercicioDominio.FichaTreinoID = exercicioAtualizar.FichaTreinoID;
+        exercicioDominio.Series = exercicioAtualizar.Series.Value;
+        exercicioDominio.Repeticoes = exercicioAtualizar.Repeticoes.Value;
 
         await _exercicioRepositorio.AtualizarAsync(exercicioDominio);
     }
