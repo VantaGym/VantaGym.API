@@ -22,6 +22,7 @@ public class UsuarioRepositorio : BaseRepositorio, IUsuarioRepositorio
     public async Task DeleteAsync(Usuario usuario)
     {
         usuario.Ativo = false;
+        _contexto.Usuarios.Update(usuario);
         await _contexto.SaveChangesAsync();
     }
 

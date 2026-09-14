@@ -22,6 +22,7 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
     public async Task DeleteAsync(HistoricoTreino historicoTreino)
     {
         historicoTreino.Ativo = false;
+        _contexto.HistoricoTreinos.Update(historicoTreino);
         await _contexto.SaveChangesAsync();
     }
 

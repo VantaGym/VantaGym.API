@@ -19,6 +19,15 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         if (historicoCriar == null)
             throw new Exception("Histórico não pode ser vazio!");
 
+        if (historicoCriar.SeriesFeitas <= 0)
+            throw new Exception("A quantidade de séries não pode ser nula ou negativa!");
+
+        if (historicoCriar.RepeticoesFeitas <= 0)
+            throw new Exception("A quantidade de repetições não pode ser nula ou negativa!");
+
+        if (historicoCriar.CargaKg <= 0)
+            throw new Exception("A carga não pode ser nula ou negativa!");
+
         var exercicio = await _exercicioRepositorio.ObterAsync(historicoCriar.ExercicioID);
 
         if (exercicio == null)
@@ -26,9 +35,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         var historico = new HistoricoTreino
         {
-            SeriesFeitas = historicoCriar.SeriesFeitas,
-            CargaKg = historicoCriar.CargaKg,
-            RepeticoesFeitas = historicoCriar.RepeticoesFeitas,
+            SeriesFeitas = historicoCriar.SeriesFeitas.Value,
+            CargaKg = historicoCriar.CargaKg.Value,
+            RepeticoesFeitas = historicoCriar.RepeticoesFeitas.Value,
             DataExecucao = DateTime.Now,
             ExercicioID = exercicio.ID,
             FichaTreinoID = exercicio.FichaTreinoID

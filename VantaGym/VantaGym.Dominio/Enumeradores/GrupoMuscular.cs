@@ -5,10 +5,9 @@ public enum GrupoMuscular
     Costas = 2,
     Pernas = 3,
     Ombro = 4,
-    Biceps = 5,
-    Triceps = 6,
-    Abdomen = 7,
-    Gluteo = 8,
-    Panturrilha = 9,
-    CorpoTodo = 10
+    Bíceps = 5,
+    Tríceps = 6,
+    Abdômen = 7,
+    Glúteo = 8,
+    Panturrilha = 9
 }

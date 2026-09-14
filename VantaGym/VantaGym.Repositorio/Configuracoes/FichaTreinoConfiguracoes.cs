@@ -12,7 +12,7 @@ public class FichaTreinoConfiguracoes : IEntityTypeConfiguration<FichaTreino>
         builder.ToTable("FichaTreino").HasKey(x => x.ID);
         builder.Property(nameof(FichaTreino.ID)).HasColumnName("FichaTreinoID");
         builder.Property(nameof(FichaTreino.Nome)).HasColumnName("Nome").IsRequired(true);
-        builder.Property(nameof(FichaTreino.Ativo)).HasColumnName("Ativa").IsRequired(true);
+        builder.Property(nameof(FichaTreino.Ativo)).HasColumnName("Ativo").IsRequired(true);
         builder.Property(nameof(FichaTreino.UsuarioID)).HasColumnName("UsuarioID").IsRequired(true);
 
         builder.HasOne(x => x.Usuario)

@@ -13,15 +13,23 @@ public class FichaTreinoRepositorio : BaseRepositorio, IFichaTreinoRepositorio
 
     public async Task<int> SalvarAsync(FichaTreino fichaTreino)
     {
-        await _contexto.FichaTreinos.AddAsync(fichaTreino);
-        await _contexto.SaveChangesAsync();
+        try
+        {
+            await _contexto.FichaTreinos.AddAsync(fichaTreino);
+            await _contexto.SaveChangesAsync();
 
-        return fichaTreino.ID;
+            return fichaTreino.ID;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.InnerException?.Message ?? ex.Message);
+        }
     }
 
     public async Task DeleteAsync(FichaTreino fichaTreino)
     {
         fichaTreino.Ativo = false;
+        _contexto.FichaTreinos.Update(fichaTreino);
         await _contexto.SaveChangesAsync();
     }
 

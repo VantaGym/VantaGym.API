@@ -22,6 +22,7 @@ public class ExercicioRepositorio : BaseRepositorio, IExercicioRepositorio
     public async Task DeleteAsync(Exercicio exercicio)
     {
         exercicio.Ativo = false;
+        _contexto.Exercicios.Update(exercicio);
         await _contexto.SaveChangesAsync();
     }
 
@@ -54,6 +55,18 @@ public class ExercicioRepositorio : BaseRepositorio, IExercicioRepositorio
                     return exercicio;
                 }, splitOn: "FichaID", commandType: CommandType.StoredProcedure);
 
+        return exercicios;
+    }
+
+    public async Task<IEnumerable<Exercicio>> ListarPorFichaAsync(int fichaTreinoID)
+    {
+        var exercicios = await _contexto.Database.GetDbConnection().QueryAsync<Exercicio, FichaTreino, Exercicio>(
+            "sp_Exercicio_ListarPorFicha", (exercicio, fichaTreino) =>
+            {
+                exercicio.FichaTreino = fichaTreino;
+                return exercicio;
+            }, new { FichaTreinoID = fichaTreinoID }, splitOn: "FichaID", commandType: CommandType.StoredProcedure
+        );
         return exercicios;
     }
 }

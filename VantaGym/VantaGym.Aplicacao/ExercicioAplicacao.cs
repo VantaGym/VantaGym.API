@@ -20,8 +20,8 @@ public class ExercicioAplicacao : IExercicioAplicacao
         var exercicio = new Exercicio
         {
             Nome = exercicioCriar.Nome,
-            Series = exercicioCriar.Series,
-            Repeticoes = exercicioCriar.Repeticoes,
+            Series = exercicioCriar.Series.Value,
+            Repeticoes = exercicioCriar.Repeticoes.Value,
             GrupoMuscular = exercicioCriar.GrupoMuscular,
             FichaTreinoID = exercicioCriar.FichaTreinoID
         };

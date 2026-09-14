@@ -6,4 +6,5 @@ public interface IExercicioRepositorio
     Task AtualizarAsync(Exercicio exercicio);
     Task<Exercicio> ObterAsync(int exercicioId);
     Task <IEnumerable<Exercicio>> ListarAsync();
+    Task<IEnumerable<Exercicio>> ListarPorFichaAsync(int fichaTreinoID);
 }

@@ -6,5 +6,6 @@ namespace VantaGym.Aplicacao.DTOs.Resposta
     {
         public int ID { get; set; }
         public string Nome { get; set; }
+        public List<string> GruposMusculares { get; set; } = new();
     }
 }

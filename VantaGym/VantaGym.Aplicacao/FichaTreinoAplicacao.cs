@@ -8,9 +8,11 @@ namespace VantaGym.Aplicacao;
 public class FichaTreinoAplicacao : IFichaTreinoAplicacao
 {
     readonly IFichaTreinoRepositorio _fichaTreinoRepositorio;
-    public FichaTreinoAplicacao(IFichaTreinoRepositorio fichaTreinoRepositorio)
+    readonly IExercicioRepositorio _exercicioRepositorio;
+    public FichaTreinoAplicacao(IFichaTreinoRepositorio fichaTreinoRepositorio, IExercicioRepositorio exercicioRepositorio)
     {
         _fichaTreinoRepositorio = fichaTreinoRepositorio;
+        _exercicioRepositorio = exercicioRepositorio;
     }
     public async Task<int> CriarAsync(FichaTreinoCriar fichaTreinoCriar)
     {
@@ -52,13 +54,22 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
     public async Task<IEnumerable<FichaTreinoListar>> ListarAsync()
     {
         var fichas = await _fichaTreinoRepositorio.ListarAsync();
+        var fichasResposta = new List<FichaTreinoListar>();
 
-        var fichasResposta = fichas.Select(fichaTreino => new FichaTreinoListar
+        foreach (var fichaTreino in fichas)
         {
-            ID = fichaTreino.ID,
-            Nome = fichaTreino.Nome
-        }).ToList();
-
+            var exercicios = await _exercicioRepositorio.ListarPorFichaAsync(fichaTreino.ID);
+            var gruposMusculares = exercicios
+                .Select(x => x.GrupoMuscular.ToString())
+                .Distinct()
+                .ToList();
+            fichasResposta.Add(new FichaTreinoListar
+            {
+                ID = fichaTreino.ID,
+                Nome = fichaTreino.Nome,
+                GruposMusculares = gruposMusculares
+            });
+        }
         return fichasResposta;
     }
     public async Task AtualizarAsync(FichaTreinoAtualizar fichaTreinoAtualizar)

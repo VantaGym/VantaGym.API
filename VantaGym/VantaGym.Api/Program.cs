@@ -22,12 +22,11 @@ builder.Services.AddDbContext<VantaGymContexto>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirReact", policy =>
+    options.AddDefaultPolicy(builder =>
     {
-        policy
-            .WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        builder.WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
@@ -46,7 +45,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("PermitirReact");
+app.UseCors();
 
 app.UseAuthorization();
 
