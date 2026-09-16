@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using VantaGym.Aplicacao;
 using VantaGym.Aplicacao.DTOs.Requisicao;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace VantaGym.Api
 {
@@ -14,13 +16,15 @@ namespace VantaGym.Api
             _exercicioAplicacao = exercicioAplicacao;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Criar")]
         public async Task<ActionResult> CriarAsync([FromBody] ExercicioCriar exercicioCriar)
         {
             try
             {
-                var exercicio = await _exercicioAplicacao.CriarAsync(exercicioCriar);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var exercicio = await _exercicioAplicacao.CriarAsync(exercicioCriar, usuarioID);
                 return Ok(exercicio);
             }
             catch (Exception ex)
@@ -29,13 +33,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Obter/{exercicioID}")]
         public async Task<ActionResult> ObterAsync([FromRoute] int exercicioID)
         {
             try
             {
-                var exercicioResposta = await _exercicioAplicacao.ObterAsync(exercicioID);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var exercicioResposta = await _exercicioAplicacao.ObterAsync(exercicioID, usuarioID);
                 return Ok(exercicioResposta);
             }
             catch (Exception ex)
@@ -44,13 +50,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpPut]
         [Route("Atualizar")]
         public async Task<ActionResult> AtualizarAsync([FromBody] ExercicioAtualizar exercicioAtualizar)
         {
             try
             {
-                await _exercicioAplicacao.AtualizarAsync(exercicioAtualizar);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                await _exercicioAplicacao.AtualizarAsync(exercicioAtualizar, usuarioID);
                 return Ok(exercicioAtualizar);
             }
             catch (Exception ex)
@@ -59,13 +67,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("Deletar/{exercicioID}")]
         public async Task<ActionResult> DeletarAsync([FromRoute] int exercicioID)
         {
             try
             {
-                await _exercicioAplicacao.DeletarAsync(exercicioID);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                await _exercicioAplicacao.DeletarAsync(exercicioID, usuarioID);
                 return Ok();
             }
             catch (Exception ex)
@@ -74,13 +84,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Listar")]
         public async Task<ActionResult> ListarAsync()
         {
             try
             {
-                var exercicios = await _exercicioAplicacao.ListarAsync();
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var exercicios = await _exercicioAplicacao.ListarAsync(usuarioID);
                 return Ok(exercicios);
             }
             catch (Exception ex)

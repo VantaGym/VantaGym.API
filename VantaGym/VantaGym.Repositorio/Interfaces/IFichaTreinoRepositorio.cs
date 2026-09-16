@@ -5,5 +5,5 @@ public interface IFichaTreinoRepositorio
     Task DeleteAsync(FichaTreino fichaTreino);
     Task AtualizarAsync(FichaTreino fichaTreino);
     Task<FichaTreino> ObterAsync(int fichaTreinoId);
-    Task <IEnumerable<FichaTreino>> ListarAsync();
+    Task<IEnumerable<FichaTreino>> ListarAsync(int usuarioID);
 }

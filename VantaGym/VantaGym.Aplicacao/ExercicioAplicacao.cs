@@ -8,11 +8,13 @@ namespace VantaGym.Aplicacao;
 public class ExercicioAplicacao : IExercicioAplicacao
 {
     readonly IExercicioRepositorio _exercicioRepositorio;
-    public ExercicioAplicacao(IExercicioRepositorio exercicioRepositorio)
+    readonly IFichaTreinoRepositorio _fichaTreinoRepositorio;
+    public ExercicioAplicacao(IExercicioRepositorio exercicioRepositorio, IFichaTreinoRepositorio fichaTreinoRepositorio)
     {
         _exercicioRepositorio = exercicioRepositorio;
+        _fichaTreinoRepositorio = fichaTreinoRepositorio;
     }
-    public async Task<int> CriarAsync(ExercicioCriar exercicioCriar)
+    public async Task<int> CriarAsync(ExercicioCriar exercicioCriar, int usuarioID)
     {
         if (exercicioCriar == null)
             throw new Exception("Exercício não pode ser vazio!");
@@ -22,6 +24,11 @@ public class ExercicioAplicacao : IExercicioAplicacao
 
         if (exercicioCriar.Repeticoes <= 0)
             throw new Exception("A quantidade de repetições não pode ser nula ou negativa!");
+
+        var fichaTreino = await _fichaTreinoRepositorio.ObterAsync(exercicioCriar.FichaTreinoID);
+
+        if (fichaTreino == null || fichaTreino.UsuarioID != usuarioID)
+            throw new Exception("Ficha de treino não encontrada!");
 
         var exercicio = new Exercicio
         {
@@ -34,11 +41,14 @@ public class ExercicioAplicacao : IExercicioAplicacao
 
         return await _exercicioRepositorio.SalvarAsync(exercicio);
     }
-    public async Task<ExercicioResposta> ObterAsync(int exercicioID)
+    public async Task<ExercicioResposta> ObterAsync(int exercicioID, int usuarioID)
     {
         var exercicioDominio = await _exercicioRepositorio.ObterAsync(exercicioID);
 
         if (exercicioDominio == null)
+            throw new Exception("Exercício não encontrado!");
+
+        if (exercicioDominio.FichaTreino.UsuarioID != usuarioID)
             throw new Exception("Exercício não encontrado!");
 
         var exercicioResposta = new ExercicioResposta()
@@ -50,11 +60,12 @@ public class ExercicioAplicacao : IExercicioAplicacao
             GrupoMuscular = exercicioDominio.GrupoMuscular,
             FichaTreinoNome = exercicioDominio.FichaTreino.Nome
         };
+
         return exercicioResposta;
     }
-    public async Task<IEnumerable<ExercicioResposta>> ListarAsync()
+    public async Task<IEnumerable<ExercicioResposta>> ListarAsync(int usuarioID)
     {
-        var exercicios = await _exercicioRepositorio.ListarAsync();
+        var exercicios = await _exercicioRepositorio.ListarAsync(usuarioID);
 
         var exerciciosResposta = exercicios.Select(exercicio => new ExercicioResposta
         {
@@ -68,11 +79,14 @@ public class ExercicioAplicacao : IExercicioAplicacao
 
         return exerciciosResposta;
     }
-    public async Task AtualizarAsync(ExercicioAtualizar exercicioAtualizar)
+    public async Task AtualizarAsync(ExercicioAtualizar exercicioAtualizar, int usuarioID)
     {
         var exercicioDominio = await _exercicioRepositorio.ObterAsync(exercicioAtualizar.ID);
 
         if (exercicioDominio == null)
+            throw new Exception("Exercício não encontrado!");
+
+        if (exercicioDominio.FichaTreino.UsuarioID != usuarioID)
             throw new Exception("Exercício não encontrado!");
 
         if (exercicioAtualizar.Series <= 0)
@@ -81,7 +95,6 @@ public class ExercicioAplicacao : IExercicioAplicacao
         if (exercicioAtualizar.Repeticoes <= 0)
             throw new Exception("A quantidade de repetições não pode ser nula ou negativa!");
 
-
         exercicioDominio.Nome = exercicioAtualizar.Nome;
         exercicioDominio.GrupoMuscular = exercicioAtualizar.GrupoMuscular;
         exercicioDominio.Series = exercicioAtualizar.Series.Value;
@@ -89,11 +102,14 @@ public class ExercicioAplicacao : IExercicioAplicacao
 
         await _exercicioRepositorio.AtualizarAsync(exercicioDominio);
     }
-    public async Task DeletarAsync(int exercicioID)
+    public async Task DeletarAsync(int exercicioID, int usuarioID)
     {
         var exercicioDominio = await _exercicioRepositorio.ObterAsync(exercicioID);
 
         if (exercicioDominio == null)
+            throw new Exception("Exercício não encontrado!");
+
+        if (exercicioDominio.FichaTreino.UsuarioID != usuarioID)
             throw new Exception("Exercício não encontrado!");
 
         await _exercicioRepositorio.DeleteAsync(exercicioDominio);

@@ -14,7 +14,7 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
         _fichaTreinoRepositorio = fichaTreinoRepositorio;
         _exercicioRepositorio = exercicioRepositorio;
     }
-    public async Task<int> CriarAsync(FichaTreinoCriar fichaTreinoCriar)
+    public async Task<int> CriarAsync(FichaTreinoCriar fichaTreinoCriar, int usuarioID)
     {
         if (fichaTreinoCriar == null)
             throw new Exception("A ficha de treino não pode ser vazia!");
@@ -22,16 +22,19 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
         var fichaTreino = new FichaTreino
         {
             Nome = fichaTreinoCriar.Nome,
-            UsuarioID = fichaTreinoCriar.UsuarioID,
+            UsuarioID = usuarioID
         };
 
         return await _fichaTreinoRepositorio.SalvarAsync(fichaTreino);
     }
-    public async Task<FichaTreinoResposta> ObterAsync(int fichaTreinoID)
+    public async Task<FichaTreinoResposta> ObterAsync(int fichaTreinoID, int usuarioID)
     {
         var fichaTreino = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoID);
 
         if (fichaTreino == null)
+            throw new Exception("Ficha de treino não encontrada!");
+
+        if (fichaTreino.UsuarioID != usuarioID)
             throw new Exception("Ficha de treino não encontrada!");
 
         var fichaTreinoResposta = new FichaTreinoResposta
@@ -48,12 +51,11 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
                 GrupoMuscular = exercicio.GrupoMuscular
             }).ToList()
         };
-
         return fichaTreinoResposta;
     }
-    public async Task<IEnumerable<FichaTreinoListar>> ListarAsync()
+    public async Task<IEnumerable<FichaTreinoListar>> ListarAsync(int usuarioID)
     {
-        var fichas = await _fichaTreinoRepositorio.ListarAsync();
+        var fichas = await _fichaTreinoRepositorio.ListarAsync(usuarioID);
         var fichasResposta = new List<FichaTreinoListar>();
 
         foreach (var fichaTreino in fichas)
@@ -72,22 +74,28 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
         }
         return fichasResposta;
     }
-    public async Task AtualizarAsync(FichaTreinoAtualizar fichaTreinoAtualizar)
+    public async Task AtualizarAsync(FichaTreinoAtualizar fichaTreinoAtualizar, int usuarioID)
     {
         var fichaTreinoDominio = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoAtualizar.ID);
 
         if (fichaTreinoDominio == null)
             throw new Exception("Ficha de treino não encontrada!");
 
+        if (fichaTreinoDominio.UsuarioID != usuarioID)
+            throw new Exception("Ficha de treino não encontrada!");
+
         fichaTreinoDominio.Nome = fichaTreinoAtualizar.Nome;
 
         await _fichaTreinoRepositorio.AtualizarAsync(fichaTreinoDominio);
     }
-    public async Task DeletarAsync(int fichaTreinoID)
+    public async Task DeletarAsync(int fichaTreinoID, int usuarioID)
     {
         var fichaTreinoDominio = await _fichaTreinoRepositorio.ObterAsync(fichaTreinoID);
 
         if (fichaTreinoDominio == null)
+            throw new Exception("Ficha de treino não encontrada!");
+
+        if (fichaTreinoDominio.UsuarioID != usuarioID)
             throw new Exception("Ficha de treino não encontrada!");
 
         await _fichaTreinoRepositorio.DeleteAsync(fichaTreinoDominio);

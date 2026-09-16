@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using VantaGym.Aplicacao;
 using VantaGym.Aplicacao.DTOs.Requisicao;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace VantaGym.Api
 {
@@ -14,13 +16,15 @@ namespace VantaGym.Api
             _historicoTreinoAplicacao = historicoTreinoAplicacao;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Criar")]
         public async Task<ActionResult> CriarAsync([FromBody] HistoricoTreinoCriar historicoTreinoCriar)
         {
             try
             {
-                var historicoTreino = await _historicoTreinoAplicacao.CriarAsync(historicoTreinoCriar);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var historicoTreino = await _historicoTreinoAplicacao.CriarAsync(historicoTreinoCriar, usuarioID);
                 return Ok(historicoTreino);
             }
             catch (Exception ex)
@@ -29,13 +33,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Obter/{historicoTreinoID}")]
         public async Task<ActionResult> ObterAsync([FromRoute] int historicoTreinoID)
         {
             try
             {
-                var historicoTreinoResposta = await _historicoTreinoAplicacao.ObterAsync(historicoTreinoID);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var historicoTreinoResposta = await _historicoTreinoAplicacao.ObterAsync(historicoTreinoID, usuarioID);
                 return Ok(historicoTreinoResposta);
             }
             catch (Exception ex)
@@ -44,13 +50,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpPut]
         [Route("Atualizar")]
         public async Task<ActionResult> AtualizarAsync([FromBody] HistoricoTreinoAtualizar historicoTreinoAtualizar)
         {
             try
             {
-                await _historicoTreinoAplicacao.AtualizarAsync(historicoTreinoAtualizar);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                await _historicoTreinoAplicacao.AtualizarAsync(historicoTreinoAtualizar, usuarioID);
                 return Ok(historicoTreinoAtualizar);
             }
             catch (Exception ex)
@@ -59,13 +67,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("Deletar/{historicoTreinoID}")]
         public async Task<ActionResult> DeletarAsync([FromRoute] int historicoTreinoID)
         {
             try
             {
-                await _historicoTreinoAplicacao.DeletarAsync(historicoTreinoID);
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                await _historicoTreinoAplicacao.DeletarAsync(historicoTreinoID, usuarioID);
                 return Ok();
             }
             catch (Exception ex)
@@ -74,13 +84,15 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Listar")]
         public async Task<ActionResult> ListarAsync()
         {
             try
             {
-                var historicos = await _historicoTreinoAplicacao.ListarAsync();
+                var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var historicos = await _historicoTreinoAplicacao.ListarAsync(usuarioID);
                 return Ok(historicos);
             }
             catch (Exception ex)
@@ -89,51 +101,63 @@ namespace VantaGym.Api
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterQuantidadeTreinosSemana")]
         public async Task<IActionResult> ObterQuantidadeTreinosSemanaAsync()
         {
-            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeTreinosSemanaAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeTreinosSemanaAsync(usuarioID);
             return Ok(quantidade);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterVolumeUltimoTreino")]
         public async Task<IActionResult> ObterVolumeUltimoTreinoAsync()
         {
-            var volume = await _historicoTreinoAplicacao.ObterVolumeUltimoTreinoAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var volume = await _historicoTreinoAplicacao.ObterVolumeUltimoTreinoAsync(usuarioID);
             return Ok(volume);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterUltimoTreino")]
         public async Task<IActionResult> ObterUltimoTreinoAsync()
         {
-            var ultimoTreino = await _historicoTreinoAplicacao.ObterUltimoTreinoAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var ultimoTreino = await _historicoTreinoAplicacao.ObterUltimoTreinoAsync(usuarioID);
             return Ok(ultimoTreino);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterQuantidadeExerciciosUltimoTreino")]
         public async Task<IActionResult> ObterQuantidadeExerciciosUltimoTreinoAsync()
         {
-            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeExerciciosUltimoTreinoAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var quantidade = await _historicoTreinoAplicacao.ObterQuantidadeExerciciosUltimoTreinoAsync(usuarioID);
             return Ok(quantidade);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterVolumeSemana")]
         public async Task<IActionResult> ObterVolumeSemanaAsync()
         {
-            var volume = await _historicoTreinoAplicacao.ObterVolumeSemanaAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var volume = await _historicoTreinoAplicacao.ObterVolumeSemanaAsync(usuarioID);
             return Ok(volume);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("ObterTempoDesdeUltimoTreino")]
         public async Task<IActionResult> ObterTempoDesdeUltimoTreinoAsync()
         {
-            var tempo = await _historicoTreinoAplicacao.ObterTempoDesdeUltimoTreinoAsync();
+            var usuarioID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var tempo = await _historicoTreinoAplicacao.ObterTempoDesdeUltimoTreinoAsync(usuarioID);
             return Ok(tempo);
         }
     }

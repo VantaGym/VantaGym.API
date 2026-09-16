@@ -42,20 +42,22 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
                     historico.FichaTreino = fichaTreino;
                     historico.Exercicio = exercicio;
                     return historico;
-                }, parametros, splitOn: "ID,ID", commandType: CommandType.StoredProcedure);
+                }, parametros, splitOn: "FichaID,ExercicioSplitID", commandType: CommandType.StoredProcedure);
 
         return historicos.FirstOrDefault();
     }
 
-    public async Task<IEnumerable<HistoricoTreino>> ListarAsync()
+    public async Task<IEnumerable<HistoricoTreino>> ListarAsync(int usuarioID)
     {
+        var parametros = new { UsuarioID = usuarioID };
+
         return await _contexto.Database.GetDbConnection().QueryAsync<HistoricoTreino, FichaTreino, Exercicio, HistoricoTreino>(
                 "sp_HistoricoTreino_Listar", (historico, fichaTreino, exercicio) =>
                 {
                     historico.FichaTreino = fichaTreino;
                     historico.Exercicio = exercicio;
                     return historico;
-                }, splitOn: "FichaID,ExercicioID", commandType: CommandType.StoredProcedure);
+                }, parametros, splitOn: "FichaID,ExercicioID", commandType: CommandType.StoredProcedure);
     }
 
     public async Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID)
@@ -75,15 +77,22 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
                             AND Ativo = 1", parametros);
     }
 
-    public async Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana)
+    public async Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana, int usuarioID)
     {
-        var parametros = new { InicioSemana = inicioSemana };
+        var parametros = new
+        {
+            InicioSemana = inicioSemana,
+            UsuarioID = usuarioID
+        };
 
         return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<decimal>(
             @"SELECT ISNULL(SUM(
-            dbo.fn_CalcularVolumeTreino(CargaKg, RepeticoesFeitas, SeriesFeitas)), 0)
-                FROM HistoricoTreino
-                    WHERE DataExecucao >= @InicioSemana
-                        AND Ativo = 1", parametros);
+        dbo.fn_CalcularVolumeTreino(h.CargaKg, h.RepeticoesFeitas, h.SeriesFeitas)), 0)
+            FROM HistoricoTreino h
+            INNER JOIN FichaTreino f
+                ON h.FichaTreinoID = f.FichaTreinoID
+                WHERE h.DataExecucao >= @InicioSemana
+                    AND h.Ativo = 1
+                    AND f.UsuarioID = @UsuarioID", parametros);
     }
 }

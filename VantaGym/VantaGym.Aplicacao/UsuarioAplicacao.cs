@@ -3,15 +3,22 @@ using VantaGym.Api.DTOs.Requisicao;
 using VantaGym.Api.DTOs.Resposta;
 using System.Net.Mail;
 using VantaGym.Aplicacao.DTOs.Requisicao;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
 
 namespace VantaGym.Aplicacao;
 
 public class UsuarioAplicacao : IUsuarioAplicacao
 {
     readonly IUsuarioRepositorio _usuarioRepositorio;
-    public UsuarioAplicacao(IUsuarioRepositorio usuarioRepositorio)
+    readonly IConfiguration _configuration;
+    public UsuarioAplicacao(IUsuarioRepositorio usuarioRepositorio, IConfiguration configuration)
     {
         _usuarioRepositorio = usuarioRepositorio;
+        _configuration = configuration;
     }
     public async Task<int> CriarAsync(UsuarioCriar usuarioCriar)
     {
@@ -47,22 +54,9 @@ public class UsuarioAplicacao : IUsuarioAplicacao
 
         return usuarioResposta;
     }
-    public async Task<IEnumerable<UsuarioResposta>> ListarAsync()
+    public async Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar, int usuarioID)
     {
-        var usuarios = await _usuarioRepositorio.ListarAsync();
-
-        var usuariosResposta = usuarios.Select(usuario => new UsuarioResposta
-        {
-            Id = usuario.ID,
-            Nome = usuario.Nome,
-            Email = usuario.Email
-        }).ToList();
-
-        return usuariosResposta;
-    }
-    public async Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar)
-    {
-        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioAtualizar.ID);
+        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioID);
 
         if (usuarioDominio == null)
             throw new Exception("Usuário não encontrado!");
@@ -74,9 +68,9 @@ public class UsuarioAplicacao : IUsuarioAplicacao
 
         await _usuarioRepositorio.AtualizarAsync(usuarioDominio);
     }
-    public async Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha)
+    public async Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha, int usuarioID)
     {
-        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioAlterarSenha.ID);
+        var usuarioDominio = await _usuarioRepositorio.ObterAsync(usuarioID);
 
         if (usuarioDominio == null)
             throw new Exception("Usuário não encontrado!");
@@ -95,6 +89,55 @@ public class UsuarioAplicacao : IUsuarioAplicacao
             throw new Exception("Usuário não encontrado!");
 
         await _usuarioRepositorio.DeleteAsync(usuarioDominio);
+    }
+    public async Task<UsuarioLoginResposta> LoginAsync(UsuarioLogin usuarioLogin)
+    {
+        if (usuarioLogin == null)
+            throw new Exception("Login não pode ser vazio!");
+
+        if (string.IsNullOrEmpty(usuarioLogin.Email))
+            throw new Exception("Email não pode ser vazio!");
+
+        if (string.IsNullOrEmpty(usuarioLogin.Senha))
+            throw new Exception("Senha não pode ser vazia!");
+
+        var usuarioDominio = await _usuarioRepositorio.ObterPorEmailAsync(usuarioLogin.Email);
+
+        if (usuarioDominio == null || usuarioDominio.Senha != usuarioLogin.Senha)
+            throw new Exception("Email ou senha inválidos!");
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, usuarioDominio.ID.ToString()),
+            new Claim(ClaimTypes.Name, usuarioDominio.Nome)
+        };
+
+        var chave = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+        );
+
+        var credenciais = new SigningCredentials(
+            chave,
+            SecurityAlgorithms.HmacSha256
+        );
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddHours(Convert.ToDouble(_configuration["Jwt:ExpirationHours"])),
+            signingCredentials: credenciais
+        );
+
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return new UsuarioLoginResposta
+        {
+            Id = usuarioDominio.ID,
+            Nome = usuarioDominio.Nome,
+            Email = usuarioDominio.Email,
+            Token = tokenString
+        };
     }
 
     #region Util

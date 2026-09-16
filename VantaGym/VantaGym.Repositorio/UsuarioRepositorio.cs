@@ -45,10 +45,4 @@ public class UsuarioRepositorio : BaseRepositorio, IUsuarioRepositorio
         return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<Usuario>(
             "sp_Usuario_ObterPorEmail", parametros, commandType: CommandType.StoredProcedure);
     }
-
-    public async Task<IEnumerable<Usuario>> ListarAsync()
-    {
-        return await _contexto.Database.GetDbConnection().QueryAsync<Usuario>(
-            "sp_Usuario_Listar",commandType: CommandType.StoredProcedure);
-    }
 }

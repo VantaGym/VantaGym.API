@@ -52,15 +52,16 @@ public class ExercicioRepositorio : BaseRepositorio, IExercicioRepositorio
         return exercicios.FirstOrDefault();
     }
 
-    public async Task<IEnumerable<Exercicio>> ListarAsync()
+    public async Task<IEnumerable<Exercicio>> ListarAsync(int usuarioID)
     {
+        var parametros = new { UsuarioID = usuarioID };
+
         var exercicios = await _contexto.Database.GetDbConnection().QueryAsync<Exercicio, FichaTreino, Exercicio>(
                 "sp_Exercicio_Listar", (exercicio, fichaTreino) =>
                 {
                     exercicio.FichaTreino = fichaTreino;
                     return exercicio;
-                }, splitOn: "FichaID", commandType: CommandType.StoredProcedure);
-
+                }, parametros, splitOn: "FichaID", commandType: CommandType.StoredProcedure);
         return exercicios;
     }
 

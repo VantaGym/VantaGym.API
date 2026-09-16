@@ -54,9 +54,10 @@ public class FichaTreinoRepositorio : BaseRepositorio, IFichaTreinoRepositorio
         return fichaTreino;
     }
 
-    public async Task<IEnumerable<FichaTreino>> ListarAsync()
+    public async Task<IEnumerable<FichaTreino>> ListarAsync(int usuarioID)
     {
+        var parametros = new { UsuarioID = usuarioID };
         return await _contexto.Database.GetDbConnection().QueryAsync<FichaTreino>(
-            "sp_FichaTreino_Listar", commandType: CommandType.StoredProcedure);
+            "sp_FichaTreino_Listar", parametros, commandType: CommandType.StoredProcedure);
     }
 }

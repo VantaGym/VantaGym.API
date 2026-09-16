@@ -14,7 +14,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         _historicoTreinoRepositorio = historicoTreinoRepositorio;
         _exercicioRepositorio = exercicioRepositorio;
     }
-    public async Task<int> CriarAsync(HistoricoTreinoCriar historicoCriar)
+    public async Task<int> CriarAsync(HistoricoTreinoCriar historicoCriar, int usuarioID)
     {
         if (historicoCriar == null)
             throw new Exception("Histórico não pode ser vazio!");
@@ -33,6 +33,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         if (exercicio == null)
             throw new Exception("Exercício não encontrado!");
 
+        if (exercicio.FichaTreino.UsuarioID != usuarioID)
+            throw new Exception("Exercício não encontrado!");
+
         var historico = new HistoricoTreino
         {
             SeriesFeitas = historicoCriar.SeriesFeitas.Value,
@@ -45,11 +48,14 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return await _historicoTreinoRepositorio.SalvarAsync(historico);
     }
-    public async Task<HistoricoTreinoResposta> ObterAsync(int historicoTreinoID)
+    public async Task<HistoricoTreinoResposta> ObterAsync(int historicoTreinoID, int usuarioID)
     {
         var historicoTreino = await _historicoTreinoRepositorio.ObterAsync(historicoTreinoID);
 
         if (historicoTreino == null)
+            throw new Exception("Histórico de treino não encontrado!");
+
+        if (historicoTreino.FichaTreino.UsuarioID != usuarioID)
             throw new Exception("Histórico de treino não encontrado!");
 
         var historicoTreinoResposta = new HistoricoTreinoResposta
@@ -65,9 +71,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return historicoTreinoResposta;
     }
-    public async Task<IEnumerable<HistoricoTreinoResposta>> ListarAsync()
+    public async Task<IEnumerable<HistoricoTreinoResposta>> ListarAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
 
         var historicosResposta = historicos.Select(historicoTreino => new HistoricoTreinoResposta
         {
@@ -82,12 +88,15 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return historicosResposta;
     }
-    public async Task AtualizarAsync(HistoricoTreinoAtualizar historicoAtualizar)
+    public async Task AtualizarAsync(HistoricoTreinoAtualizar historicoAtualizar, int usuarioID)
     {
         var historicoDominio = await _historicoTreinoRepositorio
             .ObterAsync(historicoAtualizar.ID);
 
         if (historicoDominio == null)
+            throw new Exception("Histórico de treino não encontrado!");
+
+        if (historicoDominio.FichaTreino.UsuarioID != usuarioID)
             throw new Exception("Histórico de treino não encontrado!");
 
         historicoDominio.SeriesFeitas = historicoAtualizar.SeriesFeitas;
@@ -96,18 +105,21 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         await _historicoTreinoRepositorio.AtualizarAsync(historicoDominio);
     }
-    public async Task DeletarAsync(int historicoTreinoID)
+    public async Task DeletarAsync(int historicoTreinoID, int usuarioID)
     {
         var historicoTreinoDominio = await _historicoTreinoRepositorio.ObterAsync(historicoTreinoID);
 
         if (historicoTreinoDominio == null)
             throw new Exception("Histórico de treino não encontrado!");
 
+        if (historicoTreinoDominio.FichaTreino.UsuarioID != usuarioID)
+            throw new Exception("Histórico de treino não encontrado!");
+
         await _historicoTreinoRepositorio.DeleteAsync(historicoTreinoDominio);
     }
-    public async Task<int> ObterQuantidadeTreinosSemanaAsync()
+    public async Task<int> ObterQuantidadeTreinosSemanaAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
         var inicioSemana = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
         var treinos = historicos.Where(x => x.DataExecucao >= inicioSemana).GroupBy(x => new
         {
@@ -116,9 +128,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         });
         return treinos.Count();
     }
-    public async Task<decimal> ObterVolumeUltimoTreinoAsync()
+    public async Task<decimal> ObterVolumeUltimoTreinoAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
 
         var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
 
@@ -127,9 +139,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return await _historicoTreinoRepositorio.ObterVolumeUltimoTreinoAsync(ultimoTreino.DataExecucao, ultimoTreino.FichaTreinoID);
     }
-    public async Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync()
+    public async Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
 
         var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
 
@@ -147,9 +159,9 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
             DataExecucao = ultimoTreino.DataExecucao
         };
     }
-    public async Task<int> ObterQuantidadeExerciciosUltimoTreinoAsync()
+    public async Task<int> ObterQuantidadeExerciciosUltimoTreinoAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
         var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
 
         if (ultimoTreino == null)
@@ -157,14 +169,14 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
 
         return historicos.Count(x => x.DataExecucao.Date == ultimoTreino.DataExecucao.Date && x.FichaTreinoID == ultimoTreino.FichaTreinoID);
     }
-    public async Task<decimal> ObterVolumeSemanaAsync()
+    public async Task<decimal> ObterVolumeSemanaAsync(int usuarioID)
     {
         var inicioSemana = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-        return await _historicoTreinoRepositorio.ObterVolumeSemanaAsync(inicioSemana);
+        return await _historicoTreinoRepositorio.ObterVolumeSemanaAsync(inicioSemana, usuarioID);
     }
-    public async Task<int> ObterTempoDesdeUltimoTreinoAsync()
+    public async Task<int> ObterTempoDesdeUltimoTreinoAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync();
+        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
 
         var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
 

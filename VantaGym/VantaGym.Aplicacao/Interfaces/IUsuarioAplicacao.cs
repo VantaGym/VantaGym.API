@@ -8,10 +8,10 @@ namespace VantaGym.Aplicacao
     public interface IUsuarioAplicacao
     {
         Task<int> CriarAsync(UsuarioCriar usuarioCriar);
-        Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha);
-        Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar);
+        Task AlterarSenhaAsync(UsuarioAlterarSenha usuarioAlterarSenha, int usuarioID);
+        Task AtualizarAsync(UsuarioAtualizar usuarioAtualizar, int usuarioID);
         Task DeletarAsync(int usuarioID);
-        Task<IEnumerable<UsuarioResposta>> ListarAsync();
         Task<UsuarioResposta> ObterAsync(int usuarioID);
+        Task<UsuarioLoginResposta> LoginAsync(UsuarioLogin usuarioLogin);
     }
 }
