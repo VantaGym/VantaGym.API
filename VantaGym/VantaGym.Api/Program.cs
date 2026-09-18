@@ -4,6 +4,9 @@ using VantaGym.Repositorio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using VantaGym.Aplicacao.Interfaces;
+using VantaGym.Services;
+using VantaGym.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddScoped<IUsuarioAplicacao, UsuarioAplicacao>();
 builder.Services.AddScoped<IExercicioAplicacao, ExercicioAplicacao>();
 builder.Services.AddScoped<IFichaTreinoAplicacao, FichaTreinoAplicacao>();
 builder.Services.AddScoped<IHistoricoTreinoAplicacao, HistoricoTreinoAplicacao>();
+builder.Services.AddScoped<IIAAplicacao, IAAplicacao>();
+builder.Services.AddHttpClient<IIAService, IAService>();
 
 // Add interfaces to the databases
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();

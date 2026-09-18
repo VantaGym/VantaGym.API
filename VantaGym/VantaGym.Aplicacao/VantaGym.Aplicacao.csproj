@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VantaGym.Dominio\VantaGym.Dominio.csproj" />
     <ProjectReference Include="..\VantaGym.Repositorio\VantaGym.Repositorio.csproj" />
+    <ProjectReference Include="..\VantaGym.Services\VantaGym.Services.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
