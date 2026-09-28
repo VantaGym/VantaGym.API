@@ -9,13 +9,10 @@ public class VantaGymContexto : DbContext
     public DbSet<FichaTreino> FichaTreinos { get; set; }
     public DbSet<HistoricoTreino> HistoricoTreinos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-58UEHOH\\SQLEXPRESS;Database=VantaGym;Trusted_Connection=True;TrustServerCertificate=True");
-        }
-    }
+    public VantaGymContexto(DbContextOptions<VantaGymContexto> options) : base(options) { }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UsuarioConfiguracoes());

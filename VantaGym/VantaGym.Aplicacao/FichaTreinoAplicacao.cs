@@ -84,6 +84,9 @@ public class FichaTreinoAplicacao : IFichaTreinoAplicacao
         if (fichaTreinoDominio.UsuarioID != usuarioID)
             throw new Exception("Ficha de treino não encontrada!");
 
+        if(fichaTreinoDominio.Nome == "")
+            throw new Exception("O nome da ficha de treino não pode ser vazio!");
+
         fichaTreinoDominio.Nome = fichaTreinoAtualizar.Nome;
 
         await _fichaTreinoRepositorio.AtualizarAsync(fichaTreinoDominio);

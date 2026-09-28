@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 using VantaGym.Services.Interfaces;
 
@@ -18,57 +19,57 @@ public class IAService : IIAService
 
     public async Task<string> EnviarPerguntaIA(string pergunta, string especializacao)
     {
-        string apiKey = _configuration["Gemini:ApiKey"];
-
-        string url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent";
-        _client.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
+        string apiKey = _configuration["Groq:ApiKey"];
+        string url = "https://api.groq.com/openai/v1/chat/completions";
 
         var payload = new
         {
-            contents = new[]
+            model = "openai/gpt-oss-20b",
+            messages = new[]
             {
                 new
                 {
-                    parts = new[]
-                    {
-                        new
-                        {
-                            text = $"{especializacao}\n\n{pergunta}"
-                        }
-                    }
+                    role = "system",
+                    content = especializacao
+                },
+                new
+                {
+                    role = "user",
+                    content = pergunta
                 }
-            }
+            },
+            response_format = new
+            {
+                type = "json_object"
+            },
+            reasoning_effort = "low"
         };
 
         string json = JsonConvert.SerializeObject(payload);
         var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
         HttpResponseMessage resposta = await _client.PostAsync(url, conteudo);
-        resposta.EnsureSuccessStatusCode();
-
+        
         string resultado = await resposta.Content.ReadAsStringAsync();
-        GeminiResposta? respostaGemini = JsonConvert.DeserializeObject<GeminiResposta>(resultado);
-        if (respostaGemini == null)
+        if (!resposta.IsSuccessStatusCode)
+            throw new Exception(resultado);
+        GroqResposta? respostaGroq = JsonConvert.DeserializeObject<GroqResposta>(resultado);
+        if (respostaGroq == null)
             throw new Exception("Erro ao obter resposta da IA.");
-        return respostaGemini.Candidates[0].Content.Parts[0].Text;
+        return respostaGroq.Choices[0].Message.Content;
     }
 }
-
-public class GeminiResposta
+public class GroqResposta
 {
-    public List<GeminiCandidate> Candidates { get; set; }
+    public List<GroqChoice> Choices { get; set; } = new();
 }
 
-public class GeminiCandidate
+public class GroqChoice
 {
-    public GeminiContent Content { get; set; }
+    public GroqMessage Message { get; set; } = new();
 }
 
-public class GeminiContent
+public class GroqMessage
 {
-    public List<GeminiPart> Parts { get; set; }
-}
-
-public class GeminiPart
-{
-    public string Text { get; set; }
+    public string Content { get; set; } = string.Empty;
 }

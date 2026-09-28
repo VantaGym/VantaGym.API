@@ -7,6 +7,7 @@ using System.Text;
 using VantaGym.Aplicacao.Interfaces;
 using VantaGym.Services;
 using VantaGym.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<VantaGymContexto>();
+
+
+builder.Services.AddDbContext<VantaGymContexto>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddCors(options =>
 {
