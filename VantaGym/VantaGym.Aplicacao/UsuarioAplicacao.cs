@@ -37,6 +37,12 @@ public class UsuarioAplicacao : IUsuarioAplicacao
         if (string.IsNullOrEmpty(usuario.Senha))
             throw new Exception("Senha não pode ser vazia!");
 
+        if (await _usuarioRepositorio.EmailExistenteAsync(usuario.Email))
+            throw new Exception("Já existe uma conta com este email!");
+
+        if (usuario.Senha.Length < 6 || usuario.Senha.Length > 15)
+            throw new Exception("A senha deve ter entre 6 e 15 caracteres!");
+
         return await _usuarioRepositorio.SalvarAsync(usuario);
     }
     public async Task<UsuarioResposta> ObterAsync(int usuarioID)

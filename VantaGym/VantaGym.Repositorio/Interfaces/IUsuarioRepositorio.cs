@@ -6,4 +6,5 @@ public interface IUsuarioRepositorio
     Task AtualizarAsync(Usuario usuario);
     Task<Usuario> ObterAsync(int usuarioID);
     Task<Usuario> ObterPorEmailAsync(string email);
+    Task<bool> EmailExistenteAsync (string email);
 }

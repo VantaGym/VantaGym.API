@@ -45,4 +45,8 @@ public class UsuarioRepositorio : BaseRepositorio, IUsuarioRepositorio
         return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<Usuario>(
             "sp_Usuario_ObterPorEmail", parametros, commandType: CommandType.StoredProcedure);
     }
+    public async Task<bool> EmailExistenteAsync(string email)
+    {
+        return await _contexto.Usuarios.AnyAsync(u => u.Email == email);
+    }
 }
