@@ -40,7 +40,91 @@ public class IAService : IIAService
             },
             response_format = new
             {
-                type = "json_object"
+                type = "json_schema",
+                json_schema = new
+                {
+                    name = "treino_schema",
+                    strict = true,
+
+                    schema = new
+                    {
+                        type = "object",
+                        properties = new
+                        {
+                            fichas = new
+                            {
+                                type = "array",
+                                items = new
+                                {
+                                    type = "object",
+                                    properties = new
+                                    {
+                                        nome = new
+                                        {
+                                            type = "string"
+                                        },
+
+                                        exercicios = new
+                                        {
+                                            type = "array",
+                                            items = new
+                                            {
+                                                type = "object",
+                                                properties = new
+                                                {
+                                                    nome = new
+                                                    {
+                                                        type = "string"
+                                                    },
+
+                                                    grupoMuscular = new
+                                                    {
+                                                        type = "integer"
+                                                    },
+
+                                                    series = new
+                                                    {
+                                                        type = "integer"
+                                                    },
+
+                                                    repeticoes = new
+                                                    {
+                                                        type = "integer"
+                                                    }
+                                                },
+
+                                                required = new[]
+                                                    {
+                                                        "nome",
+                                                        "grupoMuscular",
+                                                        "series",
+                                                        "repeticoes"
+                                                    },
+
+                                                additionalProperties = false
+                                            }
+                                        }
+                                    },
+
+                                    required = new[]
+                                        {
+                                            "nome",
+                                            "exercicios"
+                                        },
+
+                                    additionalProperties = false
+                                }
+                            }
+                        },
+
+                        required = new[]
+            {
+                "fichas"
+            },
+
+                        additionalProperties = false
+                    }
+                }
             },
             reasoning_effort = "low"
         };
@@ -49,7 +133,7 @@ public class IAService : IIAService
         var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
         HttpResponseMessage resposta = await _client.PostAsync(url, conteudo);
-        
+
         string resultado = await resposta.Content.ReadAsStringAsync();
         if (!resposta.IsSuccessStatusCode)
             throw new Exception(resultado);

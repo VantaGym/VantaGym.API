@@ -41,7 +41,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
             SeriesFeitas = historicoCriar.SeriesFeitas.Value,
             CargaKg = historicoCriar.CargaKg.Value,
             RepeticoesFeitas = historicoCriar.RepeticoesFeitas.Value,
-            DataExecucao = DateTime.Now,
+            DataExecucao = historicoCriar.DataExecucao,
             ExercicioID = exercicio.ID,
             FichaTreinoID = exercicio.FichaTreinoID
         };
@@ -121,23 +121,12 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
     {
         var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
         var inicioSemana = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-        var treinos = historicos.Where(x => x.DataExecucao >= inicioSemana).GroupBy(x => new
-        {
-            x.DataExecucao.Date,
-            x.FichaTreinoID
-        });
+        var treinos = historicos.Where(x => x.DataExecucao >= inicioSemana).GroupBy(x => x.DataExecucao);
         return treinos.Count();
     }
     public async Task<decimal> ObterVolumeUltimoTreinoAsync(int usuarioID)
     {
-        var historicos = await _historicoTreinoRepositorio.ListarAsync(usuarioID);
-
-        var ultimoTreino = historicos.OrderByDescending(x => x.DataExecucao).FirstOrDefault();
-
-        if (ultimoTreino == null)
-            return 0;
-
-        return await _historicoTreinoRepositorio.ObterVolumeUltimoTreinoAsync(ultimoTreino.DataExecucao, ultimoTreino.FichaTreinoID);
+        return await _historicoTreinoRepositorio.ObterVolumeUltimoTreinoAsync(usuarioID);
     }
     public async Task<HistoricoTreinoResposta> ObterUltimoTreinoAsync(int usuarioID)
     {
@@ -167,7 +156,7 @@ public class HistoricoTreinoAplicacao : IHistoricoTreinoAplicacao
         if (ultimoTreino == null)
             return 0;
 
-        return historicos.Count(x => x.DataExecucao.Date == ultimoTreino.DataExecucao.Date && x.FichaTreinoID == ultimoTreino.FichaTreinoID);
+        return historicos.Count(x => x.DataExecucao == ultimoTreino.DataExecucao);
     }
     public async Task<decimal> ObterVolumeSemanaAsync(int usuarioID)
     {

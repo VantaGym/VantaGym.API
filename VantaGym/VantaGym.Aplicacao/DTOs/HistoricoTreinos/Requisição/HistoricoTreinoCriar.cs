@@ -7,6 +7,7 @@ namespace VantaGym.Aplicacao.DTOs.Requisicao
         public int? SeriesFeitas { get; set; }
         public decimal? CargaKg { get; set; }
         public int? RepeticoesFeitas { get; set; }
+        public DateTime DataExecucao { get; set; }
         public int ExercicioID { get; set; }
     }
 }

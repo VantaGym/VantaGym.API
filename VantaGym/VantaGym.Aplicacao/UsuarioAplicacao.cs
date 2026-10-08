@@ -84,6 +84,12 @@ public class UsuarioAplicacao : IUsuarioAplicacao
         if (usuarioDominio.Senha != usuarioAlterarSenha.SenhaAntiga)
             throw new Exception("Senha antiga inválida");
 
+        if (string.IsNullOrEmpty(usuarioDominio.Senha))
+            throw new Exception("Senha não pode ser vazia!");
+
+        if (usuarioDominio.Senha.Length < 6 || usuarioDominio.Senha.Length > 15)
+            throw new Exception("A senha deve ter entre 6 e 15 caracteres!");
+
         usuarioDominio.Senha = usuarioAlterarSenha.SenhaNova;
         await _usuarioRepositorio.AtualizarAsync(usuarioDominio);
     }

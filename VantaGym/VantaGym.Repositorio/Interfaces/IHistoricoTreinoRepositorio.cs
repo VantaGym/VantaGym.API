@@ -6,6 +6,6 @@ public interface IHistoricoTreinoRepositorio
     Task AtualizarAsync(HistoricoTreino historicoTreino);
     Task<HistoricoTreino> ObterAsync(int historicoTreinoId);
     Task<IEnumerable<HistoricoTreino>> ListarAsync(int usuarioID);
-    Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID);
+    Task<decimal> ObterVolumeUltimoTreinoAsync(int fichaTreinoID);
     Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana, int usuarioID);
 }

@@ -30,7 +30,7 @@ public class IAAplicacao : IIAAplicacao
 
         if (treino.MinutosPorTreino <= 0)
             throw new Exception("Quantidade de minutos por treino deve ser maior que 0!");
-            
+
         string especializacao = @"Você é um assistente especializado em montagem de fichas de treino de academia.
         Sua função é criar sugestões de treino simples, organizadas e adequadas às informações fornecidas pelo usuário.
         Não recomende medicamentos, suplementos ou substâncias.
@@ -47,7 +47,29 @@ public class IAAplicacao : IIAAplicacao
         Tempo disponível por treino: {treino.MinutosPorTreino} minutos
         Restrições ou preferências: {treino.Restricoes}
 
-        Crie uma ficha de treino para cada dia disponível.
+        Crie exatamente uma ficha para cada dia disponível.
+
+        Todas as fichas devem ser objetos dentro do mesmo array ""fichas"".
+
+        Nunca transforme uma ficha em texto ou string.
+
+        Exemplo com 3 dias:
+        {{
+            ""fichas"": [
+                {{
+                    ""nome"": ""Dia 1"",
+                    ""exercicios"": []
+                }},
+                {{
+                    ""nome"": ""Dia 2"",
+                    ""exercicios"": []
+                }},
+                {{
+                    ""nome"": ""Dia 3"",
+                    ""exercicios"": []
+                }}
+            ]
+        }}
 
         Para cada ficha informe:
         - Nome da ficha
@@ -75,7 +97,36 @@ public class IAAplicacao : IIAAplicacao
         Séries e repetições devem ser números inteiros.
         Não utilize intervalos como 8 a 12 repetições. Escolha apenas um número.
 
-        Retorne somente um JSON válido seguindo exatamente esta estrutura:
+        
+
+        Retorne exatamente UM objeto JSON.
+
+        Gere todas as fichas solicitadas dentro do mesmo array ""fichas"".
+
+        Cada ficha deve ser um objeto independente dentro do array.
+
+        Para cada nova ficha, abra um novo objeto com {{ e feche com }} antes de iniciar a próxima ficha.
+
+        Nunca escreva ""nome"" ou ""exercicios"" diretamente dentro do array ""fichas"".
+        ""nome"" e ""exercicios"" pertencem exclusivamente ao objeto de cada ficha.
+
+        Exemplo de duas fichas:
+        {{
+            ""fichas"": [
+                {{
+                    ""nome"": ""Dia 1"",
+                    ""exercicios"": []
+                }},
+                {{
+                    ""nome"": ""Dia 2"",
+                    ""exercicios"": []
+                }}
+            ]
+        }}
+
+        O JSON DEVE começar com {{ e terminar com }}.
+
+        A estrutura obrigatória é:
         {{
             ""fichas"": [
                 {{
@@ -92,13 +143,20 @@ public class IAAplicacao : IIAAplicacao
             ]
         }}
 
-        O objeto principal deve obrigatoriamente possuir a propriedade ""fichas"".
-        Não retorne diretamente uma lista ou array.
-        Não escreva explicações antes ou depois do JSON.
-        Não utilize Markdown.
-        Não utilize ```json.
-        Respeite as restrições informadas pelo usuário.";
-
+        IMPORTANTE:
+        - O resultado NÃO pode ser um array.
+        - NÃO coloque o objeto dentro de [].
+        - O primeiro nível do JSON deve ser um objeto contendo ""fichas"".
+        - ""fichas"" deve ser sempre um array de objetos.
+        - Cada item dentro de ""fichas"" deve ser um objeto, nunca uma string.
+        - Não coloque aspas ao redor de objetos.
+        - Não transforme nenhum objeto em texto.
+        - Cada item de ""exercicios"" deve ser um objeto contendo ""nome"", ""grupoMuscular"", ""series"" e ""repeticoes"".
+        - Não escreva explicações antes ou depois do JSON.
+        - Não utilize Markdown.
+        - Não utilize ```json.
+        - Respeite as restrições informadas pelo usuário.";
+        
         string resposta = await _iaService.EnviarPerguntaIA(pergunta, especializacao);
         TreinoIAResposta? treinoResposta = JsonConvert.DeserializeObject<TreinoIAResposta>(resposta);
 

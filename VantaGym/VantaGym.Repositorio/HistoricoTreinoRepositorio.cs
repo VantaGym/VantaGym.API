@@ -57,24 +57,35 @@ public class HistoricoTreinoRepositorio : BaseRepositorio, IHistoricoTreinoRepos
                     historico.FichaTreino = fichaTreino;
                     historico.Exercicio = exercicio;
                     return historico;
-                }, parametros, splitOn: "FichaID,ExercicioID", commandType: CommandType.StoredProcedure);
+                }, parametros, splitOn: "ID,ID", commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<decimal> ObterVolumeUltimoTreinoAsync(DateTime dataExecucao, int fichaTreinoID)
+    public async Task<decimal> ObterVolumeUltimoTreinoAsync(int usuarioID)
     {
         var parametros = new
         {
-            DataExecucao = dataExecucao.Date,
-            FichaTreinoID = fichaTreinoID
+            UsuarioID = usuarioID
         };
 
         return await _contexto.Database.GetDbConnection().QueryFirstOrDefaultAsync<decimal>(
             @"SELECT ISNULL(SUM(
-            dbo.fn_CalcularVolumeTreino(CargaKg, RepeticoesFeitas, SeriesFeitas)), 0)
-                FROM HistoricoTreino
-                    WHERE CAST(DataExecucao AS DATE) = @DataExecucao
-                        AND FichaTreinoID = @FichaTreinoID
-                            AND Ativo = 1", parametros);
+            dbo.fn_CalcularVolumeTreino(
+                h.CargaKg,
+                h.RepeticoesFeitas,
+                h.SeriesFeitas
+            )), 0)
+                FROM HistoricoTreino h
+                    INNER JOIN FichaTreino f
+                    ON h.FichaTreinoID = f.FichaTreinoID
+                        WHERE h.Ativo = 1
+                            AND f.UsuarioID = @UsuarioID
+                            AND h.DataExecucao = (
+                            SELECT MAX(h2.DataExecucao)
+                                FROM HistoricoTreino h2
+                                    INNER JOIN FichaTreino f2
+                                    ON h2.FichaTreinoID = f2.FichaTreinoID
+                                        WHERE h2.Ativo = 1
+                                            AND f2.UsuarioID = @UsuarioID)", parametros);
     }
 
     public async Task<decimal> ObterVolumeSemanaAsync(DateTime inicioSemana, int usuarioID)
